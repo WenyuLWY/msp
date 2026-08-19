@@ -3,25 +3,21 @@
 <launch>
 
   <param name="/use_sim_time"             value="true" />
-  <arg name="gazebo_gui"                  default="true"/>
+  <arg name="gazebo_gui"                  default="false"/>
 
   <arg name="world_name"                       default="$(find vehicle_simulator)/world/indoor.world"/>
 
   <!-- slam -->
   <arg name="raw_cloud_topic"             default="/livox/lidar"/> 
-  <arg name="robotName"                   default="husky"/> 
-  <!-- base link to sensor/velodyne -->
-  <arg name="sensorOffsetX"               default="0.081"/>
-  <arg name="sensorOffsetY"               default="0"/>
-  <arg name="sensorOffsetZ"               default="0"/> 
-  <!-- 0.409 -->
+  <arg name="robotName"                   default="husky"/>
+
 
   <!-- localization -->
-  <!-- <node pkg="msp_sim" type="localization_sim" name="localization_sim_node" output="screen">
+  <node pkg="msp_sim" type="localization_sim" name="localization_sim_node" output="screen">
     <param name="laserCloudTopic"           value="$(arg raw_cloud_topic)"/>
     <param name="robotName"                 value="$(arg robotName)"/>
   </node>
-  <node pkg="tf2_ros" type="static_transform_publisher" name="mappingPublisher"  args="0 0 0 0 0 0 map odom"/> -->
+  <node pkg="tf2_ros" type="static_transform_publisher" name="mappingPublisher"  args="0 0 0 0 0 0 map odom"/>
 
   <!-- Husky robot -->
   <include file="$(find msp_sim)/launch/spawn_husky.launch">
@@ -39,7 +35,7 @@
     <arg name="headless"          default="false"/>
     <arg name="debug"             default="false"/>
     <arg name="verbose"           default="false"/>
-    <!-- <arg name="world_name"        default="$(arg world_name)"/> -->
+    <arg name="world_name"        default="$(arg world_name)"/>
   </include>
 
   

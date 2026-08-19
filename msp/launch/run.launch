@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<!-- -->
+<launch>
+
+  <node pkg="nodelet" type="nodelet" name="nodelet_manager" args="manager" output="screen"/>
+  <arg name="pkg_path"                    default="$(find msp)"/>
+  <arg name="lod_density"                   default="0.152"/> 
+  <arg name="loa_accuracy"                  default="0.013"/> 
+
+  <!-- base link to sensor/velodyne -->
+  <arg name="sensorOffsetX"               default="0"/>
+  <arg name="sensorOffsetY"               default="0"/>
+  <arg name="sensorOffsetZ"               default="0"/>  <!-- 0.409 -->
+
+  <arg name="odom_frame_id"               default="odom"/> 
+  <arg name="lidar_frame_id"              default="livox"/>
+  <arg name="robot_base_frame_id"         default="base_link"/>
+  <arg name="raw_cloud_topic"             default="/livox/lidar"/> 
+  <arg name="odometry_topic"              default="/Odometry"/>
+  <arg name="mode"                        default="3d"/>
+  <arg name="source_frame_id"             default="base_link"/>
+
+  <include file="$(find msp_sim)/launch/sim_husky.launch">
+  </include>
+  
+  <include file="$(find msp)/launch/planning3d.launch">
+    <arg name="cmd_vel_topic"   value="/cmd_vel" />
+    <arg name="sensorOffsetX"   value="$(arg sensorOffsetX)" />
+    <arg name="sensorOffsetY"   value="$(arg sensorOffsetY)" />
+    <arg name="vehicleLength"   value="1" /> <!-- 1 and 0.6 for husky -->
+    <arg name="vehicleWidth"    value="0.6" />
+    <arg name="maxSpeed"        value="1" />
+    <arg name="maxAccel"        value="1.5" />
+  </include>
+
+  <node pkg="nodelet" type="nodelet" name="SensorInputNodelet" args="load msp/SensorInputNodelet nodelet_manager" output="screen">
+    <param name="lidar_frame_id"          value="$(arg lidar_frame_id)"/>
+    <param name="robot_base_frame_id"     value="$(arg robot_base_frame_id)"/>
+    <param name="odom_frame_id"           value="$(arg odom_frame_id)"/>
+    <param name="sub_odometry_topic"          value="$(arg odometry_topic)"/>
+    <param name="raw_cloud_topic"         value="$(arg raw_cloud_topic)"/>
+    <param name="mode"                    value="$(arg mode)"/>
+    <param name="source_frame_id"         value="$(arg source_frame_id)"/>
+  </node>
+
+  <node pkg="hector_trajectory_server" type="hector_trajectory_server" name="hector_trajectory_server" output="screen">
+    <param name="target_frame_name" type="string" value="map" />
+    <param name="source_frame_name" type="string" value="sensor" />
+    <param name="trajectory_update_rate" type="double" value="10.0" />
+    <param name="trajectory_publish_rate" type="double" value="10.0" />
+  </node>
+
+  <node launch-prefix="nice" pkg="rviz" type="rviz" name="rviz_run" args="-d $(find msp)/rviz/rviz3d.rviz" respawn="false" /> 
+
+</launch>

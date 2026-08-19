@@ -29,7 +29,7 @@ Panels:
   - Class: rviz/Time
     Name: Time
     SyncMode: 0
-    SyncSource: global_voxel_map
+    SyncSource: raw
 Preferences:
   PromptSaveOnExit: true
 Toolbars:
@@ -79,31 +79,26 @@ Visualization Manager:
             Expand Link Details: false
             Expand Tree: false
             Link Tree Style: Links in Alphabetic Order
+            base_footprint:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
             base_link:
               Alpha: 1
               Show Axes: false
               Show Trail: false
               Value: true
-            dummy_base_link:
-              Alpha: 1
-              Show Axes: false
-              Show Trail: false
-            fl_steering_wheel_link:
+            front_bumper_link:
               Alpha: 1
               Show Axes: false
               Show Trail: false
               Value: true
-            fl_wheel_link:
+            front_left_wheel_link:
               Alpha: 1
               Show Axes: false
               Show Trail: false
               Value: true
-            fr_steering_wheel_link:
-              Alpha: 1
-              Show Axes: false
-              Show Trail: false
-              Value: true
-            fr_wheel_link:
+            front_right_wheel_link:
               Alpha: 1
               Show Axes: false
               Show Trail: false
@@ -112,37 +107,72 @@ Visualization Manager:
               Alpha: 1
               Show Axes: false
               Show Trail: false
-            rl_steering_wheel_link:
+            inertial_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            livox:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            livox_base:
               Alpha: 1
               Show Axes: false
               Show Trail: false
               Value: true
-            rl_wheel_link:
+            mid360_mount_base_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            mid360_mount_left_support:
               Alpha: 1
               Show Axes: false
               Show Trail: false
               Value: true
-            rr_steering_wheel_link:
+            mid360_mount_plate:
               Alpha: 1
               Show Axes: false
               Show Trail: false
               Value: true
-            rr_wheel_link:
+            mid360_mount_right_support:
               Alpha: 1
               Show Axes: false
               Show Trail: false
               Value: true
+            rear_bumper_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            rear_left_wheel_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            rear_right_wheel_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            top_chassis_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            top_plate_front_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
             top_plate_link:
               Alpha: 1
               Show Axes: false
               Show Trail: false
               Value: true
-            velodyne:
+            top_plate_rear_link:
               Alpha: 1
               Show Axes: false
               Show Trail: false
-              Value: true
-            velodyne_base_link:
+            user_rail_link:
               Alpha: 1
               Show Axes: false
               Show Trail: false
@@ -676,7 +706,7 @@ Visualization Manager:
   Value: true
   Views:
     Current:
-      Class: rtabmap_rviz_plugins/OrbitOriented
+      Class: rviz/Orbit
       Distance: 10
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
@@ -693,9 +723,9 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.9503980278968811
-      Target Frame: base_link
-      Yaw: 1.9503973722457886
+      Pitch: 1.0903979539871216
+      Target Frame: <Fixed Frame>
+      Yaw: 1.7603973150253296
     Saved: ~
 Window Geometry:
   Displays:
@@ -716,4 +746,4 @@ Window Geometry:
     collapsed: false
   Width: 1386
   X: 303
-  Y: 114
+  Y: 77
