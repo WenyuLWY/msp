@@ -3,7 +3,7 @@
 
 download the simulation environment from
 
-git clone https://github.com/WenyuLWY/autonomous_exploration_development_environment.git
+git clone -b noetic https://github.com/WenyuLWY/autonomous_exploration_development_environment.git
 
 Modifications:
 
