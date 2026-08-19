@@ -1,0 +1,75 @@
+<launch>
+
+    <arg name="x" default="0.0"/>
+    <arg name="y" default="0.0"/>
+    <arg name="z" default="0.132"/>
+    <arg name="yaw" default="0.0"/>
+    <arg name="laser_3d_enabled"        default="0"/>
+    <arg name="laser_3d_topic"          default="/velodyne_points"/>
+    <arg name="laser_3d_frequency"      default="10.0"/>
+    <arg name="laser_3d_gpu_enabled"    default="0"/>
+    <arg name="laser_3d_tower"          default="1"/>
+    <arg name="laser_3d_prefix"         default=""/>
+    <arg name="laser_3d_parent"         default="top_plate_link"/>
+    <arg name="laser_3d_xyz"            default="0 0 0"/>
+    <arg name="laser_3d_rpy"            default="0 0 0"/>
+
+    <arg name= "mid360_enabled"         default="0" />
+    <arg name= "mid360_topic"           default="/livox/lidar" />
+    <arg name= "mid360_frequency"       default="10" />
+    <arg name= "mid360_samples"         default="20000" />
+    <arg name= "mid360_tower"           default="1" />
+    <arg name= "mid360_gpu_enabled"     default="1" />
+    <arg name= "mid360_parent"          default="top_plate_link"/>
+    <arg name= "mid360_xyz"             default="0 0 0"/>
+    <arg name= "mid360_rpy"             default="0 0 0"/>
+
+    <!-- <param name="robot_description" command="$(find xacro)/xacro '$(find husky_description)/urdf/husky.urdf.xacro'
+                                            laser_3d_enabled:=$(arg laser_3d_enabled)
+                                            laser_3d_topic:=$(arg laser_3d_topic)" /> -->
+    
+    <param name="robot_description" command="$(find xacro)/xacro '$(find msp_sim)/urdf/husky.urdf.xacro'
+                                            laser_3d_enabled:=$(arg laser_3d_enabled)
+                                            laser_3d_topic:=$(arg laser_3d_topic)
+                                            laser_3d_frequency:=$(arg laser_3d_frequency)
+                                            laser_3d_gpu_enabled:=$(arg laser_3d_gpu_enabled)
+                                            laser_3d_tower:=$(arg laser_3d_tower)
+                                            laser_3d_prefix:=$(arg laser_3d_prefix)
+                                            laser_3d_parent:=$(arg laser_3d_parent)
+                                            'laser_3d_xyz:=$(arg laser_3d_xyz)'
+                                            'laser_3d_rpy:=$(arg laser_3d_rpy)'
+                                            mid360_enabled:=$(arg mid360_enabled)
+                                            mid360_topic:=$(arg mid360_topic)
+                                            mid360_frequency:=$(arg mid360_frequency)
+                                            mid360_samples:=$(arg mid360_samples)
+                                            mid360_tower:=$(arg mid360_tower)
+                                            mid360_gpu_enabled:=$(arg mid360_gpu_enabled)
+                                            mid360_parent:=$(arg mid360_parent)
+                                            'mid360_xyz:=$(arg mid360_xyz)'
+                                            'mid360_rpy:=$(arg mid360_rpy)'" />
+
+    <rosparam command="load" file="$(find husky_control)/config/control.yaml" />
+
+    <node name="base_controller_spawner" pkg="controller_manager" type="spawner"
+        args="husky_joint_publisher husky_velocity_controller"/>
+
+
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+
+    <node pkg="twist_mux" type="twist_mux" name="twist_mux">
+        <rosparam command="load" file="$(find husky_control)/config/twist_mux.yaml" />
+        <remap from="cmd_vel_out" to="husky_velocity_controller/cmd_vel"/>
+    </node>
+
+
+
+    <node name="spawn_husky_model" pkg="gazebo_ros" type="spawn_model"
+            args="-x $(arg x)
+                    -y $(arg y)
+                    -z $(arg z)
+                    -Y $(arg yaw)
+                    -unpause
+                    -urdf
+                    -param robot_description
+                    -model husky" />
+</launch>

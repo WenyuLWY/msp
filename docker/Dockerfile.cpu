@@ -1,0 +1,123 @@
+# FROM osrf/ros:noetic-desktop-full
+FROM nvidia/opengl:1.0-glvnd-devel-ubuntu20.04
+
+ARG DEBIAN_FRONTEND=noninteractive
+#base
+# RUN apt update && apt upgrade -y
+RUN apt-get update && apt-get install -y lsb-release curl wget ca-certificates git gnupg gdb
+
+#ros-noetic-desktop-full
+RUN sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+RUN curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add -
+RUN apt-get update && apt-get install -y ros-noetic-desktop-full
+RUN apt-get update && apt-get install -y python3-pip python3-rosdep python3-rosinstall python3-rosinstall-generator python3-wstool build-essential python3-catkin-tools
+RUN echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc   
+RUN echo "export DISABLE_ROS1_EOL_WARNINGS=1" >> ~/.bashrc   
+
+#remove gazebo and build from source
+RUN apt-get remove -y '.*gazebo.*' '.*sdformat.*' '.*ignition-math.*' '.*ignition-msgs.*' '.*ignition-transport.*'
+RUN sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-stable.list' && \
+    wget https://packages.osrfoundation.org/gazebo.key -O - | apt-key add - && \
+    wget https://raw.githubusercontent.com/ignition-tooling/release-tools/master/jenkins-scripts/lib/dependencies_archive.sh -O /tmp/dependencies.sh && \
+    GAZEBO_MAJOR_VERSION=11 ROS_DISTRO=noetic . /tmp/dependencies.sh && \
+    echo "$BASE_DEPENDENCIES $GAZEBO_BASE_DEPENDENCIES" | tr -d '\\' | xargs apt-get install -y
+RUN apt-get update && apt-get install -y libsdformat9-dev  libignition-msgs5-dev libignition-transport8-dev libignition-common3-dev libignition-fuel-tools4-dev
+RUN git clone --depth 1 https://github.com/enwaytech/gazebo.git /root/tmp/gazebo
+RUN cd /root/tmp/gazebo && \
+        mkdir -p build && \
+        cd build && \
+        cmake -DCMAKE_INSTALL_PREFIX=/root/local .. && \
+        make -j16 && \
+        make install && \
+        rm -rf /root/tmp/gazebo
+
+#Livox
+RUN git clone --depth 1 https://github.com/Livox-SDK/Livox-SDK.git /root/tmp/Livox-SDK
+RUN cd /root/tmp/Livox-SDK && \
+    mkdir -p build && \
+    cmake .. && \
+    make -j16 && \
+    make install && \
+    rm -rf /root/tmp/Livox-SDK
+
+
+# ros dependencies workspace
+RUN mkdir -p /root/dependencies_catkin_ws/src
+RUN git clone https://github.com/ros-simulation/gazebo_ros_pkgs.git --depth 1 -b noetic-devel /root/dependencies_catkin_ws/src/gazebo_ros_pkgs
+RUN git clone https://github.com/Livox-SDK/livox_ros_driver.git --depth 1 /root/dependencies_catkin_ws/src/livox_ros_driver
+RUN git clone https://github.com/UCR-Robotics/pointcloud2_normal_rviz_plugin.git --depth 1 /root/dependencies_catkin_ws/src/pointcloud2_normal_rviz_plugin
+RUN git clone https://bitbucket.org/DataspeedInc/velodyne_simulator.git --depth 1 -b master /root/dependencies_catkin_ws/src/velodyne_simulator
+RUN git clone https://github.com/tu-darmstadt-ros-pkg/hector_gazebo.git --depth 1 /root/dependencies_catkin_ws/src/hector_gazebo
+RUN git clone https://github.com/husky/husky.git --depth 1 /root/dependencies_catkin_ws/src/husky  
+RUN git clone https://github.com/WenyuLWY/livox_laser_simulation.git --depth 1 /root/dependencies_catkin_ws/src/livox_laser_simulation
+# RUN git clone https://github.com/enwaytech/livox_laser_simulation.git --depth 1 /root/dependencies_catkin_ws/src/livox_laser_simulation
+
+
+
+#develop
+RUN apt-get update && apt-get install -y ros-noetic-hector-trajectory-server  ros-noetic-tf2-sensor-msgs ros-noetic-geographic-msgs
+#HUSKY
+RUN apt-get update && apt-get install -y ros-noetic-flir-camera-description ros-noetic-fath-pivot-mount-description \
+    ros-noetic-lms1xx  ros-noetic-interactive-marker-twist-server ros-noetic-twist-mux 
+
+#autonomous_exploration_development_environment
+RUN apt-get update && apt-get install -y libusb-dev
+#DLO
+RUN apt-get update && apt-get install -y libomp-dev libpcl-dev libeigen3-dev 
+#DSV planner
+RUN apt-get update && apt-get install -y ros-noetic-octomap-ros libgoogle-glog-dev libgflags-dev
+#RTABMAP
+RUN apt-get update && apt-get install -y ros-noetic-rtabmap-ros ros-noetic-libpointmatcher ros-noetic-libg2o ros-noetic-gtsam
+#2D nav
+RUN apt-get update && apt-get install -y ros-noetic-pointcloud-to-laserscan ros-noetic-point-cloud2-filters ros-noetic-navigation ros-noetic-teb-local-planner
+# RUN apt-get update && apt-get install -y ros-noetic-explore-lite
+
+# RUN git clone https://github.com/vectr-ucla/direct_lidar_odometry.git --depth 1 /root/dependencies_catkin_ws/src/direct_lidar_odometry
+# RUN git clone https://github.com/vectr-ucla/direct_lidar_inertial_odometry.git --depth 1 /root/dependencies_catkin_ws/src/direct_lidar_inertial_odometry
+# RUN git clone https://github.com/hku-mars/FAST_LIO.git --depth 1 /root/dependencies_catkin_ws/src/FAST_LIO && cd /root/dependencies_catkin_ws/src/FAST_LIO && \
+    # git submodule update --init
+
+ARG PATH
+ARG LD_LIBRARY_PATH
+ARG CMAKE_PREFIX_PATH
+ARG PKG_CONFIG_PATH
+ARG GAZEBO_RESOURCE_PATH
+ARG GAZEBO_MODEL_PATH
+ARG GAZEBO_PLUGIN_PATH
+
+ENV CMAKE_PREFIX_PATH=/root/local:${CMAKE_PREFIX_PATH}
+ENV LD_LIBRARY_PATH=/root/local/lib:${LD_LIBRARY_PATH}
+ENV PATH=/root/local/bin:${PATH}
+ENV PKG_CONFIG_PATH=/root/local/lib/pkgconfig:${PKG_CONFIG_PATH}
+ENV GAZEBO_RESOURCE_PATH=/root/local/share/gazebo-11
+ENV GAZEBO_MODEL_PATH=/root/local/share/gazebo-11/models
+ENV GAZEBO_PLUGIN_PATH=/root/local/lib
+
+RUN cd /root/dependencies_catkin_ws && \
+    bash -c "source /opt/ros/noetic/setup.bash && catkin build" && \
+    echo "source /root/dependencies_catkin_ws/devel/setup.bash" >> ~/.bashrc
+
+RUN mkdir -p /root/catkin_ws/src && \
+    cd /root/catkin_ws && \
+    bash -c "source /opt/ros/noetic/setup.bash && catkin build" && \
+    echo "source /root/catkin_ws/devel/setup.bash" >> ~/.bashrc
+
+RUN echo "#!/bin/bash" > /root/start.sh && \
+    echo "cd /root/catkin_ws" >> /root/start.sh && \
+    echo "source /opt/ros/noetic/setup.bash" >> /root/start.sh && \
+    echo "source ~/dependencies_catkin_ws/devel/setup.bash" >> /root/start.sh && \
+    echo "catkin config --extend /root/dependencies_catkin_ws/devel" >> /root/start.sh && \
+    # echo "catkin config --cmake-args -DCMAKE_BUILD_TYPE=Debug" >> /root/start.sh && \
+    echo "catkin build -j16" >> /root/start.sh && \ 
+    # echo "catkin config --buildlist msp" >> /root/start.sh && \
+    echo "source ~/catkin_ws/devel/setup.bash" >> /root/start.sh && \
+    echo "exec \"\$@\"" >> /root/start.sh && \
+    chmod +x /root/start.sh
+
+    
+# ENV XDG_RUNTIME_DIR=/tmp/runtime-root
+# RUN mkdir -p /tmp/runtime-root && chmod 700 /tmp/runtime-root
+
+ENTRYPOINT ["/root/start.sh"]
+
+CMD ["/bin/bash"]

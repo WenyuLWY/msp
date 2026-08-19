@@ -1,0 +1,26 @@
+<library path="lib/libmsp_nodelets">
+    <!-- <class  name="msp/PcdModelingNodelet" type="msp::PcdModelingNodelet"  base_class_type="nodelet::Nodelet">
+        <description>PcdModelingNodelet</description>
+    </class> -->
+    
+    <!-- <class name="msp/MapAssessmentNodelet" type="msp::MapAssessmentNodelet" base_class_type="nodelet::Nodelet">
+        <description>MapAssessmentNodelet</description>
+    </class> -->
+
+    <class name="msp/FilteringMappingNodelet" type="msp::FilteringMappingNodelet" base_class_type="nodelet::Nodelet">
+        <description>FilteringMappingNodelet</description>
+    </class>
+
+    <class name="msp/SensorInputNodelet" type="msp::SensorInputNodelet" base_class_type="nodelet::Nodelet">
+        <description>SensorInputNodelet</description>
+    </class>
+
+    <!-- <class name="msp/LocalizationSimNodelet" type="msp::LocalizationSimNodelet" base_class_type="nodelet::Nodelet">
+        <description>LocalizationSimNodelet</description>
+    </class> -->
+
+    <class name="msp/ScanPlanningNodelet" type="msp::ScanPlanningNodelet" base_class_type="nodelet::Nodelet">
+        <description>ScanPlanningNodelet</description>
+    </class>
+    
+</library>

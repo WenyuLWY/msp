@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:include filename="$(find msp_sim)/urdf/mid360.urdf.xacro" />
+
+  <xacro:macro name="Livox_Mid360_mount" params="parent:=top_plate_link topic:=/livox/lidar hz:=10 samples:=20000 height:=0.12 *origin gpu_enabled:=1">
+
+  <link name="mid360_mount_base_link" />
+
+  <link name="mid360_mount_plate">
+    <visual>
+      <geometry>
+        <box size="0.04 0.141 0.0063" />
+      </geometry>
+      <material name="black">
+        <color rgba="1 1 1 1" />
+      </material>
+      <origin xyz="0 0 0.00315" rpy="0 0 0" />
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.04 0.02 ${height}" />
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+    </collision>
+  </link>
+
+  <link name="mid360_mount_left_support">
+    <visual>
+      <geometry>
+        <box size="0.04 0.02 ${height}" />
+      </geometry>
+      <material name="black">
+        <color rgba="1 1 1 1" />
+      </material>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.04 0.02 ${height}" />
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+    </collision>
+  </link>
+  <link name="mid360_mount_right_support">
+    <visual>
+      <geometry>
+        <box size="0.04 0.02 ${height}" />
+      </geometry>
+      <material name="black">
+        <color rgba="1 1 1 1" />
+      </material>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.04 0.02 ${height}" />
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+    </collision>
+  </link>
+
+  <joint name="mid360_mount_base_link_joint" type="fixed">
+    <parent link="${parent}" />
+    <child link="mid360_mount_base_link" />
+    <xacro:insert_block name="origin" />
+  </joint>
+  <joint name="mid360_mount_left_support_joint" type="fixed">
+    <parent link="mid360_mount_base_link" />
+    <child link="mid360_mount_left_support" />
+    <origin xyz="0 0.06 ${height/2}" rpy="0 0 0"/>
+  </joint>
+  <joint name="mid360_mount_right_support_joint" type="fixed">
+    <parent link="mid360_mount_base_link" />
+    <child link="mid360_mount_right_support" />
+    <origin xyz="0 -0.06 ${height/2}" rpy="0 0 0"/>
+  </joint>
+  <joint name="mid360_mount_plate_joint" type="fixed">
+    <parent link="mid360_mount_base_link" />
+    <child link="mid360_mount_plate" />
+    <origin xyz="0 0 ${height}" rpy="0 0 0"/>
+  </joint>
+
+  <xacro:Livox_Mid360 parent="mid360_mount_plate"  topic="${topic}"  hz="${hz}" samples="${samples}" gpu_enabled ="${gpu_enabled}">
+    <origin xyz="0 0 0.0063" rpy="0 -0.349066 0" />
+  </xacro:Livox_Mid360>
+  </xacro:macro>
+</robot>

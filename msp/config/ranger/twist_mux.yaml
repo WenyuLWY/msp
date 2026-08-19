@@ -1,0 +1,10 @@
+topics:
+- name    : movebase
+  topic   : /movebase/cmd_vel
+  timeout : 0.5
+  priority: 0
+- name    : rqt_robot_steering
+  topic   : /rqt_robot_steering/cmd_vel
+  timeout : 0.5
+  priority: 1
+locks: []

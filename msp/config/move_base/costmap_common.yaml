@@ -1,0 +1,27 @@
+# footprint: [[-0.5, -0.33], [-0.5, 0.33], [0.5, 0.33], [0.5, -0.33]]
+footprint: [[0.3,0.2], [0.3,-0.2], [-0.3,-0.2], [-0.3,0.2]]
+
+footprint_padding: 0.1
+
+robot_base_frame: base_link
+
+transform_tolerance: 0.5
+resolution: 0.05
+
+# obstacle_range: 5.5
+# raytrace_range: 6.0
+
+obstacle_range: 2.0
+raytrace_range: 3.5
+
+#layer definitions
+static:
+    map_topic: /rtabmap/grid_map
+    subscribe_to_updates: false
+
+obstacles_laser:
+    observation_sources: laser
+    laser: {data_type: LaserScan, clearing: true, marking: true, topic: /scan_2d, inf_is_valid: true}
+
+inflation:
+    inflation_radius: 1.0
