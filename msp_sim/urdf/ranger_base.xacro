@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-1-g15f4949  Build Version: 1.6.7594.29634
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="bunker">
+  
+  <link name="base_link">
+    <visual>
+      <origin xyz="0 0 0.360" rpy="0 0 0" />
+      <material name="">
+        <color rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+    </collision>
+  </link>
+
+  <link name="sick_lidar">
+    <inertial>
+      <origin xyz="-0.00045913 -1.8604E-06 2.5918E-05" rpy="0 0 0" />
+      <mass value="0.61592" />
+      <inertia ixx="0.00068379" ixy="-1.9672E-09" ixz="-3.1807E-06" iyy="0.00069059" iyz="-3.821E-08" izz="0.00083913" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <material name="">
+        <color rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+    </collision>
+  </link>
+
+  <joint name="laser_joint" type="fixed">
+    <origin xyz="0.0 0 0" rpy="0 0 0" />
+    <parent link="imu_link" />
+    <child link="sick_lidar" />
+    <axis xyz="0 0 0" />
+  </joint>
+
+  <link name="imu_link"/>
+
+  <joint name="imu_joint" type="fixed">
+    <origin xyz="0.713 0 0.920" rpy="0 0 0" />
+    <parent link="base_link" />
+    <child link="imu_link" />
+    <axis xyz="0 0 0" />
+  </joint>
+  
+</robot>

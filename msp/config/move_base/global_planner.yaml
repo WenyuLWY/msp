@@ -1,0 +1,29 @@
+NavfnROS:
+  allow_unknown: true # Specifies whether or not to allow navfn to create plans that traverse unknown space.
+  default_tolerance: 0.1 # A tolerance on the goal point for the planner.
+
+GlobalPlanner:
+  allow_unknown: true
+  use_dijkstra: true
+  use_quadratic: true
+  use_grid_path: false
+
+  # use_quadratic: true
+  # use_dijkstra: true
+  # use_grid_path: true
+  # use_quadratic: false
+
+#   The tour run successfully with navfn package and our global planner.
+
+# When I tried to run the globalplanner, it does not work for all cases, at first it work fine for A* and usegrid_path:
+
+# use_dijkstra: false
+# use_grid_path: true
+# and it work for:
+
+# use_dijkstra: true
+# use_grid_path: false
+# When I tried to set (usedijkstra: true usegridpath: true) or (usedijkstra: false usegridpath: false) I got following error:
+
+# [ERROR] [1428007403.359484659]: NO PATH!
+# [ERROR] [1428007403.360301729]: Failed to get a plan from potential when a legal potential was found. This shouldn't happen.
