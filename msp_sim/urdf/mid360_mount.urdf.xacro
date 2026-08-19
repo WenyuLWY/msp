@@ -63,7 +63,8 @@
   <joint name="mid360_mount_base_link_joint" type="fixed">
     <parent link="${parent}" />
     <child link="mid360_mount_base_link" />
-    <xacro:insert_block name="origin" />
+    <!-- <xacro:insert_block name="origin" /> -->
+    <origin xyz="-0.081 0 0" rpy="0 0 0"/>
   </joint>
   <joint name="mid360_mount_left_support_joint" type="fixed">
     <parent link="mid360_mount_base_link" />
@@ -82,7 +83,8 @@
   </joint>
 
   <xacro:Livox_Mid360 parent="mid360_mount_plate"  topic="${topic}"  hz="${hz}" samples="${samples}" gpu_enabled ="${gpu_enabled}">
-    <origin xyz="0 0 0.0063" rpy="0 -0.349066 0" />
+    <!-- <origin xyz="-0.016 0 0" rpy="0 0.35 0" /> -->
+    <origin xyz="0 0 0" rpy="0 0 0" />
   </xacro:Livox_Mid360>
   </xacro:macro>
 </robot>
