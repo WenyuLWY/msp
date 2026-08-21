@@ -1,4 +1,4 @@
 #!/bin/bash
 source config.env
-docker build -t ${IMAGE_NAME} -f Dockerfile.gpu .
-# docker build -t ${IMAGE_NAME}-cpu -f Dockerfile.cpu .
+# docker build -t ${IMAGE_NAME}-gpu -f Dockerfile.gpu .
+docker build -t ${IMAGE_NAME} -f Dockerfile.cpu .
