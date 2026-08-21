@@ -1,22 +1,38 @@
 # msp
-## Prerequisites
+## Step
 
-download the simulation environment from
+### download the simulation environment and path planning module
 
+To use with AEDE:
+```
 git clone -b noetic https://github.com/WenyuLWY/autonomous_exploration_development_environment.git
+```
 
-Modifications:
+Use robot model:
+```
+git clone -b main https://github.com/WenyuLWY/autonomous_exploration_development_environment.git
+```
 
-add indoor env as an example
+### download the exploration framework
 
-change cmd_vel topic 
+```
+git clone https://github.com/WenyuLWY/tare_planner.git
+```
 
-remove velodyne_simulator pkg
+### run
+
+Start the simulation environment and msp module:
+
+```
+roslaunch msp run.launch
+```
+
+and start the exploration module:
+
+```
+roslaunch tare_planner explore.launch
+```
 
 
 
-## debug
 
-
-
-catkin config --blacklist ranger_base ranger_bringup ranger_msgs ugv_sdk four_wheel_steering_controller four_wheel_steering_msgs ranger_mini_control ranger_mini_v2 ranger_mini_v2_gazebo ranger_mini_v3 ranger_mini_v3_gazebo urdf_geometry_parser ranger_desription
