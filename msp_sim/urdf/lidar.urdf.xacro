@@ -6,6 +6,6 @@
 
   <xacro:include filename="$(find msp_sim)/urdf/mid360.urdf.xacro" />
   <xacro:Livox_Mid360 parent="lidar" topic="/livox/lidar"  hz="5" samples="20000" gpu_enabled ="1">
-    <origin xyz="0 0 0.0063" rpy="0 0.35 0" />
+    <origin xyz="0 0 0.0063" rpy="0 0 0" />
   </xacro:Livox_Mid360>
 </robot>

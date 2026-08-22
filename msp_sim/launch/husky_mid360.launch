@@ -6,6 +6,8 @@
   <arg name="gazebo_gui"                  default="false"/>
 
   <arg name="world_name"                       default="$(find vehicle_simulator)/world/indoor.world"/>
+  <!-- <arg name="world_name"                       default="$(find msp_sim)/world/room_with_corner.world"/> -->
+
 
   <!-- slam -->
   <arg name="raw_cloud_topic"             default="/livox/lidar"/> 
@@ -25,6 +27,8 @@
     <arg name="mid360_topic"            default="$(arg raw_cloud_topic)"/>
     <arg name="mid360_frequency"        default="5" />
     <arg name="mid360_samples"          default="20000" />
+    <arg name="mid360_xyz"              default="0 0 0"/>
+    <arg name="mid360_rpy"              default="0 0.35 0"/>
   </include>
 
   <!-- gazebo world -->

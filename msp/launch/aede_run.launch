@@ -13,7 +13,11 @@
   <arg name="sensorOffsetZ"               default="0"/>  <!-- 0.409 -->
 
   
-  <include file="$(find msp_sim)/launch/system_indoor.launch">
+  <!-- <include file="$(find msp_sim)/launch/system_indoor_vip16.launch">
+  </include> -->
+  <!-- <include file="$(find msp_sim)/launch/system_indoor_mid360.launch">
+  </include> -->
+  <include file="$(find msp_sim)/launch/husky_mid360.launch">
   </include>
   
   <node pkg="nodelet" type="nodelet" name="FilteringMappingNodelet" args="load msp/FilteringMappingNodelet nodelet_manager" output="screen">
