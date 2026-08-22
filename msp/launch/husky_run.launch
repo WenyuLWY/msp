@@ -8,8 +8,6 @@
   <arg name="loa_accuracy"                  default="0.013"/> 
 
   <!-- base link to sensor/velodyne -->
-  <arg name="sensorOffsetX"               default="0"/>
-  <arg name="sensorOffsetY"               default="0"/>
   <arg name="sensorOffsetZ"               default="0"/>  <!-- 0.409 -->
 
   
@@ -21,17 +19,18 @@
   <arg name="mode"                        default="3d"/>
   <arg name="source_frame_id"             default="base_link"/>
 
-  <include file="$(find msp_sim)/launch/sim_husky.launch">
+  <include file="$(find msp_sim)/launch/husky_mid360.launch">
   </include>
   
   <include file="$(find msp)/launch/planning3d.launch">
     <arg name="cmd_vel_topic"   value="/cmd_vel" />
-    <arg name="sensorOffsetX"   value="$(arg sensorOffsetX)" />
-    <arg name="sensorOffsetY"   value="$(arg sensorOffsetY)" />
+    <arg name="sensorOffsetX"   value="0.016" /> <!-- 0.016 for 20 degree -->
+    <arg name="sensorOffsetY"   value="0" />
     <arg name="vehicleLength"   value="1" /> <!-- 1 and 0.6 for husky -->
-    <arg name="vehicleWidth"    value="0.6" />
-    <arg name="maxSpeed"        value="1" />
-    <arg name="maxAccel"        value="1.5" />
+    <arg name="vehicleWidth"    value="0.7" />
+    <arg name="maxSpeed"        value="1" />  <!-- 1 -->
+    <arg name="maxAccel"        value="1" /> <!-- 1.5 -->
+    <arg name="twoWayDrive"     value="false" />
   </include>
 
 
@@ -39,10 +38,18 @@
     <param name="lidar_frame_id"          value="$(arg lidar_frame_id)"/>
     <param name="robot_base_frame_id"     value="$(arg robot_base_frame_id)"/>
     <param name="odom_frame_id"           value="$(arg odom_frame_id)"/>
-    <param name="sub_odometry_topic"          value="$(arg odometry_topic)"/>
+    <param name="sub_odometry_topic"      value="$(arg odometry_topic)"/>
     <param name="raw_cloud_topic"         value="$(arg raw_cloud_topic)"/>
     <param name="mode"                    value="$(arg mode)"/>
     <param name="source_frame_id"         value="$(arg source_frame_id)"/>
+    <param name="vehicle_crop_box"        value="-0.5 0.5 -0.35 0.35 -0.5 0.0"/>`
+  </node>
+
+  <node pkg="nodelet" type="nodelet" name="FilteringMappingNodelet" args="load msp/FilteringMappingNodelet nodelet_manager" output="screen">
+    <param name="raw_cloud_topic"          value="/registered_scan"/>
+    <param name="pkg_path"                 value="$(arg pkg_path)"/>
+    <param name="lod_density"              value="$(arg lod_density)"/>
+    <param name="loa_accuracy"             value="$(arg loa_accuracy)"/>
   </node>
 
   <node pkg="hector_trajectory_server" type="hector_trajectory_server" name="hector_trajectory_server" output="screen">

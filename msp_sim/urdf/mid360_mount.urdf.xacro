@@ -84,7 +84,8 @@
 
   <xacro:Livox_Mid360 parent="mid360_mount_plate"  topic="${topic}"  hz="${hz}" samples="${samples}" gpu_enabled ="${gpu_enabled}">
     <!-- <origin xyz="-0.016 0 0" rpy="0 0.35 0" /> -->
-    <origin xyz="0 0 0" rpy="0 0 0" />
+    <!-- <origin xyz="0 0 0" rpy="0 0 0" /> -->
+    <xacro:insert_block name="origin" />
   </xacro:Livox_Mid360>
   </xacro:macro>
 </robot>

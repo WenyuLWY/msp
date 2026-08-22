@@ -4,6 +4,8 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
+        - /Global Options1
+        - /sensor1
         - /sensor1/TF1/Tree1
         - /exploration1/global_full1
         - /exploration1/Path2
@@ -38,7 +40,7 @@ Visualization Manager:
       Cell Size: 1
       Class: rviz/Grid
       Color: 160; 160; 164
-      Enabled: false
+      Enabled: true
       Line Style:
         Line Width: 0.029999999329447746
         Value: Lines
@@ -51,7 +53,7 @@ Visualization Manager:
       Plane: XY
       Plane Cell Count: 50
       Reference Frame: <Fixed Frame>
-      Value: false
+      Value: true
     - Class: rviz/Group
       Displays:
         - Class: rviz/Image
@@ -69,18 +71,116 @@ Visualization Manager:
         - Alpha: 1
           Class: rviz/RobotModel
           Collision Enabled: false
-          Enabled: false
+          Enabled: true
           Links:
             All Links Enabled: true
             Expand Joint Details: false
             Expand Link Details: false
             Expand Tree: false
             Link Tree Style: Links in Alphabetic Order
+            base_footprint:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            base_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            front_bumper_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            front_left_wheel_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            front_right_wheel_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            imu_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            inertial_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            livox:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            livox_base:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            mid360_mount_base_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            mid360_mount_left_support:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            mid360_mount_plate:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            mid360_mount_right_support:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            rear_bumper_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            rear_left_wheel_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            rear_right_wheel_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            top_chassis_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            top_plate_front_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            top_plate_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            top_plate_rear_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            user_rail_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
           Name: RobotModel
           Robot Description: robot_description
           TF Prefix: ""
           Update Interval: 0
-          Value: false
+          Value: true
           Visual Enabled: true
         - Alpha: 1
           Class: rviz/Axes
@@ -700,7 +800,7 @@ Visualization Manager:
   Global Options:
     Background Color: 48; 48; 48
     Default Light: true
-    Fixed Frame: map
+    Fixed Frame: base_link
     Frame Rate: 30
   Name: root
   Tools:
@@ -718,7 +818,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/XYOrbit
-      Distance: 164.140625
+      Distance: 1.6466162204742432
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -726,17 +826,17 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: 66.55302429199219
-        Y: -11.653881072998047
-        Z: 7.329866093641613e-06
+        X: 0.17004239559173584
+        Y: 0.2726241946220398
+        Z: 7.389470738417003e-06
       Focal Shape Fixed Size: false
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.5647963285446167
+      Pitch: 0.40479740500450134
       Target Frame: base_link
-      Yaw: 4.703122615814209
+      Yaw: 4.7731242179870605
     Saved: ~
 Window Geometry:
   Displays:
@@ -757,4 +857,4 @@ Window Geometry:
     collapsed: false
   Width: 1386
   X: 303
-  Y: 114
+  Y: 77

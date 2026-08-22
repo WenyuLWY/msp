@@ -16,6 +16,8 @@
 #include <tf2_sensor_msgs/tf2_sensor_msgs.h>
 #include <tf2_eigen/tf2_eigen.h>
 
+#include <visualization_msgs/Marker.h>
+
 namespace msp
 {    
     class SensorInputNodelet : public nodelet::Nodelet
@@ -45,8 +47,11 @@ namespace msp
         std::string  mode;
         std::string  source_frame_id;
         std::string  target_frame_id;
+        std::string crop_box_str;
+        double min_x, max_x, min_y, max_y, min_z, max_z;
         bool pub_registered_cloud = false;
         bool transform_odometry = false;
+        
         // std::string  registeredCloudTopic;
         // bool publish_odom_tf = true;
 
@@ -65,25 +70,35 @@ namespace msp
         ros::Publisher pubOdometryScan;
         ros::Publisher pubLaserCloudRegistered; 
         ros::Publisher pubLaserCloudSensorscan;
-        // tf::TransformBroadcaster tfBroadcaster;
+        ros::Publisher pubCropBox;
         tf2_ros::TransformBroadcaster tfBroadcaster;
 
         tf2_ros::Buffer tfBuffer;
         std::shared_ptr<tf2_ros::TransformListener> tfListener;
         std::shared_ptr<tf2_ros::StaticTransformBroadcaster> staticBr;
-        geometry_msgs::TransformStamped  tfSensorToBase;
+        geometry_msgs::TransformStamped  tfBaseToLidar;
+        geometry_msgs::TransformStamped  tfSensorToVehicle;
         Eigen::Affine3d transformCorrectMat;
         Eigen::Affine3d transformCorrectMatInv;
+        Eigen::Affine3d SensorCorrectMat;
+        // Eigen::Affine3d SensorCorrectMatInv;
 
         // bool need_transform_ = false;
         // bool initialized_ = false;
-        tf2::Transform tfToSensor;
+        // tf2::Transform tfToSensor;
+
+        pcl::CropBox<PointT> crop_filter;
 
         virtual void onInit()
         {
             nh = getNodeHandle();
             private_nh = getPrivateNodeHandle();
             readParameters();
+
+            crop_filter.setMin(Eigen::Vector4f(min_x, min_y, min_z, 1.0));
+            crop_filter.setMax(Eigen::Vector4f(max_x, max_y, max_z, 1.0));
+            crop_filter.setNegative(true);
+            std::cout<<"[msp/sensor_input_nodelet]Crop box: min("<<min_x<<","<<min_y<<","<<min_z<<") max("<<max_x<<","<<max_y<<","<<max_z<<")"<<std::endl;
 
             //listener
             tfListener = std::make_shared<tf2_ros::TransformListener>(tfBuffer);
@@ -96,34 +111,44 @@ namespace msp
             }
             else if(mode =="3d")
             {
-                target_frame_id = lidar_frame_id;
+                // target_frame_id = lidar_frame_id;
+                target_frame_id = "sensor";
                 pub_odometry_topic= "/state_estimation";
                 auto start1 = ros::Time::now();
                 try
                 {
-                    tfSensorToBase = tfBuffer.lookupTransform(
-                        lidar_frame_id,
+                    tfBaseToLidar = tfBuffer.lookupTransform(
                         robot_base_frame_id,
+                        lidar_frame_id,
                         ros::Time(0),
                         ros::Duration(20.0));
                     auto end1 = ros::Time::now();
                     double elapsed1 = (end1 - start1).toSec();
-                    tfSensorToBase.header.stamp = ros::Time::now();
-                    tfSensorToBase.header.frame_id = "sensor";
-                    tfSensorToBase.child_frame_id = "vehicle";
-                    tfSensorToBase.transform = tfSensorToBase.transform;
-                    double vehicleHeight = tfSensorToBase.transform.translation.z;
-                    tfSensorToBase.transform.translation.z = 0.0; 
-                    
+                    tfSensorToVehicle.header.stamp = ros::Time::now();
+                    tfSensorToVehicle.header.frame_id = "sensor";
+                    tfSensorToVehicle.child_frame_id = "vehicle";
+                    double vehicleHeight = tfBaseToLidar.transform.translation.z;
+                    tfSensorToVehicle.transform.translation.x = -tfBaseToLidar.transform.translation.x;
+                    tfSensorToVehicle.transform.translation.y = -tfBaseToLidar.transform.translation.y;
+                    tfSensorToVehicle.transform.translation.z = 0;
+                    tfSensorToVehicle.transform.rotation.x = 0.0;
+                    tfSensorToVehicle.transform.rotation.y = 0.0;
+                    tfSensorToVehicle.transform.rotation.z = 0.0;
+                    tfSensorToVehicle.transform.rotation.w = 1.0;
+
                     geometry_msgs::TransformStamped tfVehicleToBase;
                     tfVehicleToBase.header.stamp = ros::Time::now();
                     tfVehicleToBase.header.frame_id = "vehicle";
                     tfVehicleToBase.child_frame_id = robot_base_frame_id;
-                    tfVehicleToBase.transform.translation.z = vehicleHeight;
+                    tfVehicleToBase.transform.translation.z = -vehicleHeight;
                     tfVehicleToBase.transform.rotation.w = 1.0; 
 
-                    staticBr->sendTransform({tfSensorToBase, tfVehicleToBase});
+                    staticBr->sendTransform({tfSensorToVehicle, tfVehicleToBase});
                     ROS_INFO("[msp/sensor_input_nodelet]TF acquire success! Elapsed time: %.3f s", elapsed1);
+                    SensorCorrectMat= tf2::transformToEigen(tfBaseToLidar);
+                    SensorCorrectMat.translation().setZero();
+                    // SensorCorrectMatInv = SensorCorrectMat.inverse();
+                    
                 }
                 catch (tf2::TransformException &ex)
                 {
@@ -174,13 +199,53 @@ namespace msp
             pubLaserCloudSensorscan = nh.advertise<sensor_msgs::PointCloud2>("/sensor_scan", 10);
             pubOdometry = nh.advertise<nav_msgs::Odometry>(pub_odometry_topic, 10);
             pubOdometryScan = nh.advertise<nav_msgs::Odometry>("/state_estimation_at_scan", 10);
+            pubCropBox = nh.advertise<visualization_msgs::Marker>("/vehicle_box", 1, true);
 
+            visualization_msgs::Marker marker;
+            marker.header.frame_id = "sensor";
+            marker.header.stamp = ros::Time(0); //ros::Time::now()
+            marker.ns = "vehicle_box";
+            marker.id = 0;
+            marker.type = visualization_msgs::Marker::CUBE;
+            marker.action = visualization_msgs::Marker::ADD;
+
+            // box 中心
+            marker.pose.position.x = (min_x + max_x) / 2.0;
+            marker.pose.position.y = (min_y + max_y) / 2.0;
+            marker.pose.position.z = (min_z + max_z) / 2.0;
+
+            marker.pose.orientation.x = 0.0;
+            marker.pose.orientation.y = 0.0;
+            marker.pose.orientation.z = 0.0;
+            marker.pose.orientation.w = 1.0;
+
+            // box 尺寸
+            marker.scale.x = max_x - min_x;
+            marker.scale.y = max_y - min_y;
+            marker.scale.z = max_z - min_z;
+
+            // 红色半透明
+            marker.color.r = 0.0;
+            marker.color.g = 1.0;
+            marker.color.b = 0.0;
+            marker.color.a = 0.25;
+
+            marker.lifetime = ros::Duration(0);
+
+            pubCropBox.publish(marker);
         }
 
 
 
         void readParameters()
         {
+            private_nh.param<std::string>("vehicle_crop_box",crop_box_str, "-0.01 0.01 -0.01 0.01 -0.01 0.01");
+            std::stringstream ss(crop_box_str);
+            if (!(ss >> min_x >> max_x >> min_y >> max_y >> min_z >> max_z))
+            {
+                ROS_ERROR("Invalid vehicle_crop_box: %s", crop_box_str.c_str());
+            }
+
             private_nh.param<std::string>("lidar_frame_id", lidar_frame_id, "velodyne");
             private_nh.param<std::string>("robot_base_frame_id", robot_base_frame_id, "base_footprint");
             private_nh.param<std::string>("odom_frame_id", odom_frame_id, "odom");
@@ -256,15 +321,25 @@ namespace msp
             odom.header.frame_id = odom_frame_id;
             odom.pose.pose = tf2::toMsg(transformMat);
 
-            sensor_msgs::PointCloud2 laserCloudRegistered;  
-            pcl_ros::transformPointCloud(transformMat.matrix().cast<float>(), *laserCloudIn, laserCloudRegistered);
-            laserCloudRegistered.header.stamp = laserCloudIn->header.stamp;
-            laserCloudRegistered.header.frame_id = odom_frame_id;
-
             geometry_msgs::TransformStamped transformStamped;
             transformStamped.header.stamp = odometryData->header.stamp;
             transformStamped.header.frame_id = odom_frame_id;
             transformStamped.transform = tf2::eigenToTransform(transformMat).transform;
+
+            pcl::PointCloud<PointT>::Ptr cloud_in(new pcl::PointCloud<PointT>());
+            pcl::fromROSMsg(*laserCloudIn, *cloud_in);
+            pcl::transformPointCloud(*cloud_in,*cloud_in,SensorCorrectMat.cast<float>());
+            pcl::PointCloud<PointT>::Ptr cloud_crop(new pcl::PointCloud<PointT>());
+            crop_filter.setInputCloud(cloud_in);
+            crop_filter.filter(*cloud_crop);
+            pcl::transformPointCloud(*cloud_crop,*cloud_crop,transformMat.cast<float>());
+
+            sensor_msgs::PointCloud2 laserCloudRegistered; 
+            pcl::toROSMsg(*cloud_crop, laserCloudRegistered);
+            // transformMat = transformMat * SensorCorrectMat;
+            // pcl_ros::transformPointCloud(transformMat.matrix().cast<float>(), *laserCloudIn, laserCloudRegistered);
+            laserCloudRegistered.header.stamp = laserCloudIn->header.stamp;
+            laserCloudRegistered.header.frame_id = odom_frame_id;
 
             if(mode =="2d")
             {

@@ -50,18 +50,19 @@
 #include <Eigen/Core>
 
 // cpp
-#include <string>
-#include <thread>
-#include <vector>
-#include <queue>
-#include <algorithm>
-#include <unordered_set>
-#include <condition_variable>
-#include <cmath>
-#include <memory>
-#include <climits>
+#include <bits/stdc++.h>
+// #include <string>
+// #include <thread>
+// #include <vector>
+// #include <queue>
+// #include <algorithm>
+// #include <unordered_set>
+// #include <condition_variable>
+// #include <cmath>
+// #include <memory>
+// #include <climits>
 
-typedef pcl::PointXYZ PointT;
+typedef pcl::PointXYZI PointT;
 
 
 template <class ROSMsgType>
