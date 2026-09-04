@@ -19,7 +19,9 @@
   <arg name="mode"                        default="3d"/>
   <arg name="source_frame_id"             default="base_link"/>
 
-  <include file="$(find msp_sim)/launch/husky_mid360.launch">
+  <!-- <include file="$(find msp_sim)/launch/husky_mid360.launch">
+  </include> -->
+  <include file="$(find msp_sim)/launch/husky_vip16.launch">
   </include>
   
   <include file="$(find msp)/launch/planning3d.launch">

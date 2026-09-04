@@ -33,6 +33,8 @@ and start the exploration module:
 roslaunch tare_planner explore.launch
 ```
 
+gazebo /root/catkin_ws/src/msp_sim/script/building.world
+
 
 
 
