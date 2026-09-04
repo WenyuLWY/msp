@@ -73,6 +73,9 @@ add_dependencies(msp_nodelets ${PROJECT_NAME}_gencfg)
 target_compile_definitions(msp_nodelets PRIVATE PCL_NO_PRECOMPILE)
 target_link_libraries(msp_nodelets ${COMMON_LIBRARIES})
 
+add_executable(savepcd script/savepcd.cpp)
+target_link_libraries(savepcd ${COMMON_LIBRARIES} )
+
 # test
 # add_executable(test_filter test/test_filter.cpp)
 # target_link_libraries(test_filter ${COMMON_LIBRARIES} )

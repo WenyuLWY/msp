@@ -9,6 +9,8 @@
   <arg name="vehicleYaw" default="0"/>
   <arg name="gazebo_gui" default="false"/>
   <arg name="checkTerrainConn" default="false"/>
+  <arg name="lod_density" default="0.152"/> 
+
 
   <include file="$(find ps3joy)/launch/ps3.launch" />
 
@@ -37,9 +39,10 @@
 
   <include file="$(find sensor_scan_generation)/launch/sensor_scan_generation.launch" />
 
-  <!-- <include file="$(find visualization_tools)/launch/visualization_tools.launch" >
+  <include file="$(find visualization_tools)/launch/visualization_tools.launch" >
     <arg name="world_name" value="$(arg world_name)"/>
-  </include> -->
+    <arg name="lod_density"               value="$(arg lod_density)"/> 
+  </include>
 
   <!-- <node launch-prefix="nice" pkg="rviz" type="rviz" name="rvizGA" args="-d $(find vehicle_simulator)/rviz/vehicle_simulator.rviz" respawn="true"/> -->
 
