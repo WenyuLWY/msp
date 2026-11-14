@@ -1,0 +1,31 @@
+<!-- -->
+<launch>
+
+    <!-- <arg name="robotName"                   default="turtlebot3_burger"/> -->
+    <arg name="laserCloudTopic"             default="/velodyne_points"/>
+    <arg name="base_frame_id"               default="base_footprint"/>
+    <!-- <arg name="pubOdometryTopic"            default="/odom"/> -->
+
+    <!-- localization -->
+    <!-- <node pkg="msp_sim" type="localization_sim" name="localization_sim_node" output="screen">
+        <param name="laserCloudTopic"   value="$(arg laserCloudTopic)"/>
+        <param name="robotName"         value="$(arg robotName)"/>
+        <param name="pubOdometryTopic"  value="$(arg pubOdometryTopic)"/>
+    </node> -->
+
+    <node pkg="tf2_ros" type="static_transform_publisher" name="world2map" args="0 0 0 0 0 0 world map" />
+    <node pkg="tf2_ros" type="static_transform_publisher" name="map2odom"  args="0 0 0 0 0 0 map odom"/>
+
+    <!-- octomapping -->
+    <node pkg="octomap_server" type="octomap_server_node" name="octomap_server" output="screen">
+        <param name="resolution" value="0.05"/>
+        <param name="frame_id" value="map"/>
+        <param name="base_frame_id" value="$(arg base_frame_id)"/>
+        <param name="sensor_model/max_range" value="10.0"/>
+        <remap from="cloud_in" to="$(arg laserCloudTopic)"/>
+        <param name="occupancy_min_z" value="0.15"/>
+        <param name="occupancy_max_z" value="1.0"/>
+        <remap from="projected_map" to="/map"/>
+    </node>
+
+</launch>

@@ -79,7 +79,8 @@
       <origin xyz="0 0 ${height}" rpy="0 0 0"/>
     </joint>
 
-    <xacro:VLP-16 parent="${prefix}vlp16_mount_plate" topic="${topic}" name="${prefix}velodyne" hz="${hz}" gpu="${gpu}">
+    <xacro:VLP-16 parent="${prefix}vlp16_mount_plate"  name="${prefix}velodyne" topic="${topic}"
+                  hz="${hz}" lasers="16" samples="1875" noise="0.0" gpu="${gpu}">
       <origin xyz="0 0 0.0063" rpy="0 0 0" />
     </xacro:VLP-16>
   </xacro:macro>

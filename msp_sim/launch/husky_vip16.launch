@@ -19,12 +19,12 @@
     <param name="laserCloudTopic"           value="$(arg raw_cloud_topic)"/>
     <param name="robotName"                 value="$(arg robotName)"/>
   </node>
-  <node pkg="tf2_ros" type="static_transform_publisher" name="mappingPublisher"  args="0 0 0 0 0 0 map odom"/>
 
   <!-- Husky robot -->
   <include file="$(find msp_sim)/launch/spawn_husky.launch">
     <arg name="laser_3d_enabled"          default="1"/>
   </include>
+  <node pkg="tf2_ros" type="static_transform_publisher" name="mappingPublisher"  args="0 0 0 0 0 0 map odom"/>
 
   <!-- gazebo world -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch" >

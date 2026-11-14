@@ -11,17 +11,29 @@ RUN sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main"
 RUN curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add -
 RUN apt-get update && apt-get install -y ros-noetic-desktop-full
 RUN apt-get update && apt-get install -y python3-pip python3-rosdep python3-rosinstall python3-rosinstall-generator python3-wstool build-essential python3-catkin-tools
-RUN echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc   
-RUN echo "export DISABLE_ROS1_EOL_WARNINGS=1" >> ~/.bashrc   
 
+ENV GAZEBO_MODEL_DATABASE_URI=
+RUN sed -i 's#^export GAZEBO_MODEL_DATABASE_URI=.*#export GAZEBO_MODEL_DATABASE_URI=""#' \
+        /usr/share/gazebo/setup.sh /usr/share/gazebo-11/setup.sh 2>/dev/null || true
+
+#add user
+RUN groupadd -g 1000 user && \
+    useradd -m -u 1000 -g 1000 -s /bin/bash user && \
+    echo "user ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 # ros dependencies workspace
-RUN mkdir -p /root/dependencies_catkin_ws/src
-RUN git clone https://github.com/UCR-Robotics/pointcloud2_normal_rviz_plugin.git --depth 1 /root/dependencies_catkin_ws/src/pointcloud2_normal_rviz_plugin
+
 
 
 #develop
-RUN apt-get update && apt-get install -y ros-noetic-hector-trajectory-server  ros-noetic-tf2-sensor-msgs ros-noetic-geographic-msgs
+RUN apt-get update && apt-get install -y ros-noetic-husky* ros-noetic-turtlebot3*
+RUN apt-get update && apt-get install -y ros-noetic-navigation
+RUN apt-get update && apt-get install -y ros-noetic-octomap-mapping ros-noetic-octomap-server ros-noetic-octomap-rviz-plugins
+RUN apt-get update && apt-get install -y ros-noetic-tf2-sensor-msgs ros-noetic-geographic-msgs
+RUN apt-get update && apt-get install -y ros-noetic-hector-trajectory-server ros-noetic-point-cloud2-filters
+RUN apt-get update && apt-get install -y ros-noetic-dwa-local-planner ros-noetic-teb-local-planner ros-noetic-explore-lite
+
+# RUN python3 -m pip install ortools numpy==1.20.3
 
 #autonomous_exploration_development_environment
 RUN apt-get update && apt-get install -y libusb-dev
@@ -35,39 +47,72 @@ RUN apt-get update && apt-get install -y libusb-dev
 # RUN apt-get update && apt-get install -y ros-noetic-pointcloud-to-laserscan ros-noetic-point-cloud2-filters ros-noetic-navigation ros-noetic-teb-local-planner
 # RUN apt-get update && apt-get install -y ros-noetic-explore-lite
 
+
 # RUN git clone https://github.com/vectr-ucla/direct_lidar_odometry.git --depth 1 /root/dependencies_catkin_ws/src/direct_lidar_odometry
 # RUN git clone https://github.com/vectr-ucla/direct_lidar_inertial_odometry.git --depth 1 /root/dependencies_catkin_ws/src/direct_lidar_inertial_odometry
 # RUN git clone https://github.com/hku-mars/FAST_LIO.git --depth 1 /root/dependencies_catkin_ws/src/FAST_LIO && cd /root/dependencies_catkin_ws/src/FAST_LIO && \
     # git submodule update --init
 
+USER user
+RUN mkdir -p ~/catkin_ws/src ~/dependencies_catkin_ws/src
+RUN git clone https://github.com/UCR-Robotics/pointcloud2_normal_rviz_plugin.git --depth 1 ~/dependencies_catkin_ws/src/pointcloud2_normal_rviz_plugin
 
-RUN cd /root/dependencies_catkin_ws && \
-    bash -c "source /opt/ros/noetic/setup.bash && catkin build" && \
-    echo "source /root/dependencies_catkin_ws/devel/setup.bash" >> ~/.bashrc
 
-RUN mkdir -p /root/catkin_ws/src && \
-    cd /root/catkin_ws && \
-    bash -c "source /opt/ros/noetic/setup.bash && catkin build" && \
-    echo "source /root/catkin_ws/devel/setup.bash" >> ~/.bashrc
+RUN cd ~/dependencies_catkin_ws && \
+    catkin config --cmake-args -DCMAKE_BUILD_TYPE=Release && \
+    bash -c "source /opt/ros/noetic/setup.bash && catkin build"
 
-RUN echo "#!/bin/bash" > /root/start.sh && \
-    echo "cd /root/catkin_ws" >> /root/start.sh && \
-    echo "source /opt/ros/noetic/setup.bash" >> /root/start.sh && \
-    echo "source ~/dependencies_catkin_ws/devel/setup.bash" >> /root/start.sh && \
-    echo "catkin config --extend /root/dependencies_catkin_ws/devel" >> /root/start.sh && \
-    echo "catkin config --cmake-args -DCMAKE_BUILD_TYPE=Release" >> /root/start.sh && \
-    echo "CORES=\$(nproc)" >> /root/start.sh && \
-    echo "JOBS=\$((CORES>1 ? CORES-1 : 1))" >> /root/start.sh && \
-    echo "catkin build -j\$JOBS" >> /root/start.sh && \
-    # echo "catkin config --buildlist msp" >> /root/start.sh && \
-    echo "source ~/catkin_ws/devel/setup.bash" >> /root/start.sh && \
-    echo "exec \"\$@\"" >> /root/start.sh && \
-    chmod +x /root/start.sh
+RUN cd ~/catkin_ws && \
+    catkin config --extend ~/dependencies_catkin_ws/devel && \
+    catkin config --cmake-args -DCMAKE_BUILD_TYPE=Release
 
-    
-# ENV XDG_RUNTIME_DIR=/tmp/runtime-root
-# RUN mkdir -p /tmp/runtime-root && chmod 700 /tmp/runtime-root
+RUN bash -c 'printf "%s\n" \
+    "export TURTLEBOT3_MODEL=burger" \
+    "export DISABLE_ROS1_EOL_WARNINGS=1" \
+    "source /opt/ros/noetic/setup.bash" \
+    "source ~/dependencies_catkin_ws/devel/setup.bash" \
+    "source ~/catkin_ws/devel/setup.bash" \
+    >> ~/.bashrc'
 
-ENTRYPOINT ["/root/start.sh"]
+RUN bash -c 'printf "%s\n" \
+    "#!/bin/bash" \
+    "cd ~/catkin_ws" \
+    "export DISABLE_ROS1_EOL_WARNINGS=1" \
+    "source /opt/ros/noetic/setup.bash" \
+    "source ~/dependencies_catkin_ws/devel/setup.bash" \
+    "CORES=\$(nproc)" \
+    "JOBS=\$((CORES>1 ? CORES-1 : 1))" \
+    "catkin build -j\$JOBS" \
+    "source ~/catkin_ws/devel/setup.bash" \
+    # "roslaunch msp run.launch" \
+    "export TURTLEBOT3_MODEL=burger" \
+    # "roslaunch msp_sim msp_sim_turtlebot3_2d.launch" \
+    # "roslaunch msp_sim msp_sim_husky_2d.launch" \
+    "roslaunch msp_sim msp_sim_husky_3d.launch" \
+    # "roslaunch tare_planner explore.launch" \
+    "exec \"\$@\"" \
+    > ~/start.sh \
+    && chmod +x ~/start.sh'
 
-CMD ["/bin/bash"]
+RUN mkdir -p ~/.gazebo ~/.gazebo/models ~/tmp/runtime-root
+ARG GAZEBO_MODEL_PATH
+ENV GAZEBO_MODEL_PATH=/home/user/.gazebo/models:${GAZEBO_MODEL_PATH}
+
+USER root
+RUN python3 <<'PY'
+import glob, re
+for f in glob.glob("/opt/ros/noetic/share/*/package.xml"):
+    s = open(f, encoding="utf-8").read()
+    s2 = re.sub(r"\s*<deprecated>.*?</deprecated>\s*", "\n", s, flags=re.S)
+    if s2 != s: open(f, "w", encoding="utf-8").write(s2)
+
+p = re.compile(r"\n# warn when using a deprecated package\n.*?message\(\"\$\{_msg\}\"\)\nendif\(\)", re.S)
+for f in glob.glob("/opt/ros/noetic/share/*/cmake/*Config.cmake"):
+    s = open(f, encoding="utf-8").read()
+    s2 = p.sub("\n", s)
+    if s2 != s: open(f, "w", encoding="utf-8").write(s2)
+PY
+
+ENTRYPOINT ["/home/user/start.sh"]
+
+CMD ["sleep", "infinity"]

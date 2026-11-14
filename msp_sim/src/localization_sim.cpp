@@ -35,7 +35,7 @@ namespace msp
                 &LocalizationSimNode::laserCloudCallback,
                 this);
 
-            pubOdometry = nh.advertise<nav_msgs::Odometry>("/Odometry", 10);
+            pubOdometry = nh.advertise<nav_msgs::Odometry>(pubOdometryTopic, 10);
 
             // robotStateClient =
             //     nh.serviceClient<gazebo_msgs::GetModelState>("/gazebo/get_model_state");
@@ -59,6 +59,7 @@ namespace msp
 
         std::string robot_name = "husky";
         std::string laserCloudTopic;
+        std::string pubOdometryTopic;
 
         int model_index = -1;
 
@@ -77,6 +78,7 @@ namespace msp
         {
             private_nh.param<std::string>("laserCloudTopic",laserCloudTopic,"/velodyne_points");
             private_nh.param<std::string>("robotName", robot_name,"husky");
+            private_nh.param<std::string>("pubOdometryTopic", pubOdometryTopic,"/odom");
         }
 
 

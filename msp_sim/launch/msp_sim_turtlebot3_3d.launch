@@ -1,0 +1,68 @@
+<!-- -->
+<launch>
+
+    <!-- 2d -->
+    <!-- publish /odom topic  -->
+    <include file="$(find msp)/launch/msp.launch">
+        <arg name="lod_density"             value="0.152" />
+        <arg name="loa_accuracy"            value="0.013" /> 
+        <arg name="odom_frame_id"           value="odom" />
+        <arg name="lidar_frame_id"          value="velodyne" />
+        <!-- frame_id of robot top urdf link -->
+        <arg name="robot_base_frame_id"     value="base_footprint" /> 
+        <arg name="raw_cloud_topic"         value="/velodyne_points" />
+        <arg name="odometry_topic"          value="/Odometry" /> 
+        <arg name="mode"                    value="2d" />
+        <!-- frame_id of odometry topic -->
+        <arg name="source_frame_id"         value="base_footprint" /> 
+    </include>
+    
+    <!-- 3d -->
+    <!-- <include file="$(find msp)/launch/msp.launch">
+        <arg name="lod_density"             value="0.152" />
+        <arg name="loa_accuracy"            value="0.013" /> 
+        <arg name="odom_frame_id"           value="odom" />
+        <arg name="lidar_frame_id"          value="livox" /> 
+        <arg name="robot_base_frame_id"     value="base_link" />
+        <arg name="raw_cloud_topic"         value="/livox/lidar" />
+        <arg name="odometry_topic"          value="/Odometry" /> 
+        <arg name="mode"                    value="3d" />
+        <arg name="source_frame_id"         value="base_link" />
+    </include> -->
+
+  <!--  $(find vehicle_simulator)/world/indoor.world
+        $(find msp_sim)/world/room_with_corner.world -->
+    <!-- velodyne -->
+    <include file="$(find msp_sim)/launch/turtblebo3.launch">
+        <arg name="gazebo_gui"              value="false" />
+        <arg name="world_name"              value="$(find msp_sim)/world/loop_with_corridor.world" />
+        <arg name="robotName"               value="turtlebot3_burger"/>
+    </include>
+
+    <!-- livox mid360 -->
+    <!-- 0 0.35 0 -->
+    <!-- <include file="$(find msp_sim)/launch/husky_sim.launch">
+        <arg name="gazebo_gui"              value="false" />
+        <arg name="world_name"              value="$(find msp_sim)/world/room_with_corner.world" />
+        <arg name="robotName"               default="husky"/>
+        <arg name="mid360_enabled"          default="1" />
+        <arg name="mid360_topic"            default="/livox/lidar"/>
+        <arg name="mid360_rpy"              default="0 0 0"/> 
+    </include> -->
+
+    <!-- <include file="$(find explore_lite)/launch/explore_costmap.launch">
+    </include> -->
+
+    <!-- <include file="$(find explore_lite)/launch/explore.launch">
+    </include> -->
+
+    <!-- <node pkg="hector_trajectory_server" type="hector_trajectory_server" name="hector_trajectory_server" output="screen">
+        <param name="target_frame_name" type="string" value="map" />
+        <param name="source_frame_name" type="string" value="base_link" />
+        <param name="trajectory_update_rate" type="double" value="10.0" />
+        <param name="trajectory_publish_rate" type="double" value="10.0" />
+    </node> -->
+
+    <node launch-prefix="nice" pkg="rviz" type="rviz" name="rviz_run" args="-d $(find msp)/rviz/rviz_sim_2d.rviz" respawn="false" /> 
+
+</launch>

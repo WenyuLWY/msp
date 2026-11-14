@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+
+<launch>
+
+
+  <!-- 2. path planning (move_base) -->
+
+  <arg name="raw_cloud_topic"            default="/velodyne_points"/> 
+  <arg name="target_frame"               default="velodyne"/> 
+  <arg name="robot_base_frame"           default="base_link"/>
+  <arg name="odom_topic"                 default="odom" />
+  <arg name="cmd_vel_topic"              default="/cmd_vel" />
+
+   <!-- the height bewteen lidar to footprint is 0.541m. -->
+  <!-- <node pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node" name="pointcloud_to_laserscan">
+    <param name="min_height" value="-0.1"/>
+    <param name="max_height " value="0.1"/>
+    <param name="target_frame" value="$(arg target_frame)"/> 
+    <param name ="concurrency_level" value="1"/>
+    <remap from="cloud_in" to="$(arg raw_cloud_topic)"/>
+    <remap from="scan" to="/scan_2d"/>
+  </node> -->
+
+
+ <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="log">
+    <!-- use navfn/NavfnROS or global_planner/GlobalPlanner -->
+    <!-- <param name="base_global_planner" value="global_planner/GlobalPlanner"/> -->
+    <!-- use dwa_local_planner/DWAPlannerROS or teb_local_planner/TebLocalPlannerROS or base_local_planner/TrajectoryPlannerROS "/>  -->
+    <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS"/>
+
+
+    <!-- <rosparam file="$(find msp)/config/husky/costmap_common.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find msp)/config/husky/costmap_common.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find msp)/config/husky/costmap_local.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find msp)/config/husky/costmap_global.yaml" command="load" ns="global_costmap"/>
+    <rosparam file="$(find msp)/config/husky/planner.yaml" command="load"/> -->
+
+    <rosparam file="$(find msp)/config/move_base/costmap_common.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find msp)/config/move_base/costmap_common.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find msp)/config/move_base/costmap_global.yaml" command="load" ns="global_costmap"/>
+    <rosparam file="$(find msp)/config/move_base/costmap_local.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find msp)/config/move_base/planner.yaml" command="load"/>
+
+    <param name="global_costmap/robot_base_frame" value="$(arg robot_base_frame)"/>
+    <param name="local_costmap/robot_base_frame"  value="$(arg robot_base_frame)"/>
+    <param name="DWAPlannerROS/min_vel_x"         value="0.0" />
+    <remap from="odom" to="$(arg odom_topic)"/>
+    <remap from="cmd_vel" to="$(arg cmd_vel_topic)"/>
+
+  </node>
+
+
+</launch>

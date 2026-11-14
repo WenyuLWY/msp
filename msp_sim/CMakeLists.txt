@@ -31,7 +31,7 @@ find_package(OpenCV REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(OpenMP REQUIRED)
 find_package(Boost REQUIRED)
-find_package(PCL REQUIRED)
+find_package(PCL QUIET REQUIRED)
 
 # list(APPEND CMAKE_PREFIX_PATH "/root/or-tools")
 # find_package(ortools CONFIG REQUIRED)
@@ -53,5 +53,5 @@ include_directories(
 set(COMMON_LIBRARIES ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} ${PCL_LIBRARIES} OpenMP::OpenMP_CXX)
 
 
-add_executable(localization_sim src/localization_sim.cpp)
-target_link_libraries(localization_sim ${COMMON_LIBRARIES} )
+# add_executable(localization_sim src/localization_sim.cpp)
+# target_link_libraries(localization_sim ${COMMON_LIBRARIES} )

@@ -33,7 +33,7 @@ find_package(OpenCV REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(OpenMP REQUIRED)
 find_package(Boost REQUIRED)
-find_package(PCL REQUIRED)
+find_package(PCL QUIET REQUIRED)
 find_package(SQLite3 REQUIRED)
 
 # list(APPEND CMAKE_PREFIX_PATH "/root/or-tools")

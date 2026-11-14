@@ -53,7 +53,7 @@ namespace msp
         bool transform_odometry = false;
         
         // std::string  registeredCloudTopic;
-        // bool publish_odom_tf = true;
+        bool publish_odom_tf = true;
 
         //message_filters sync
         message_filters::Subscriber<nav_msgs::Odometry> subOdometry;
@@ -78,9 +78,9 @@ namespace msp
         std::shared_ptr<tf2_ros::StaticTransformBroadcaster> staticBr;
         geometry_msgs::TransformStamped  tfBaseToLidar;
         geometry_msgs::TransformStamped  tfSensorToVehicle;
-        Eigen::Affine3d transformCorrectMat;
-        Eigen::Affine3d transformCorrectMatInv;
-        Eigen::Affine3d SensorCorrectMat;
+        Eigen::Affine3d transformCorrectMat= Eigen::Affine3d::Identity();;
+        Eigen::Affine3d transformCorrectMatInv= Eigen::Affine3d::Identity();;
+        Eigen::Affine3d SensorCorrectMat= Eigen::Affine3d::Identity();;
         // Eigen::Affine3d SensorCorrectMatInv;
 
         // bool need_transform_ = false;
@@ -190,6 +190,13 @@ namespace msp
                 }
             }
 
+            std::cout<< "\033[1;32m"<< "[msp_sim/SensorInputNodelet]sub_odometry_topic:" << sub_odometry_topic << "\033[0m"<< std::endl;
+            std::cout<< "\033[1;32m"<< "[msp_sim/SensorInputNodelet]cloud_topic:" << cloud_topic << "\033[0m"<< std::endl;
+            std::cout<< "\033[1;32m"<< "[msp_sim/SensorInputNodelet]pub_odometry_topic:" << pub_odometry_topic << "\033[0m"<< std::endl;
+            std::cout<< "\033[1;32m"<< "[msp_sim/SensorInputNodelet]mode:" << mode << "\033[0m"<< std::endl;
+            std::cout<< "\033[1;32m"<< "[msp_sim/SensorInputNodelet]source_frame_id:" << source_frame_id << "\033[0m"<< std::endl;
+            std::cout<< "\033[1;32m"<< "[msp_sim/SensorInputNodelet]target_frame_id:" << target_frame_id << "\033[0m"<< std::endl;
+
             subOdometry.subscribe(nh, sub_odometry_topic, 50);
             subLaserCloud.subscribe(nh, cloud_topic, 50);
             sync_.reset(new Sync(syncPolicy(50), subOdometry, subLaserCloud));
@@ -266,7 +273,7 @@ namespace msp
             
             // private_nh.param<std::string>("raw_cloud_topic", raw_cloud_topic, "/velodyne_points");
             // private_nh.param<std::string>("registered_cloud_topic", registered_cloud_topic, "/cloud_registered");
-            // private_nh.param<bool>("publish_odom_tf", publish_odom_tf, false);
+            private_nh.param<bool>("publish_odom_tf", publish_odom_tf, true);
         }
 
         void laserCloudAndOdometryHandler(const nav_msgs::Odometry::ConstPtr& odometryData,
@@ -305,7 +312,7 @@ namespace msp
 
             // std::cout<<"odom timestamp: "<<odometryData->header.stamp<<", cloud timestamp: "<<laserCloudIn->header.stamp<<std::endl;
 
-            Eigen::Affine3d transformMat;
+            Eigen::Affine3d transformMat= Eigen::Affine3d::Identity();
             tf2::fromMsg(odometryData->pose.pose, transformMat);
             if(transform_odometry)
                 transformMat = transformCorrectMat * transformMat * transformCorrectMatInv;
@@ -390,18 +397,17 @@ namespace msp
                 geometry_msgs::TransformStamped transformStampedScan=transformStamped;
                 transformStampedScan.header.stamp = laserCloudIn->header.stamp;
                 transformStampedScan.child_frame_id = "sensor_at_scan";
-                tfBroadcaster.sendTransform(transformStampedScan);
+                // tfBroadcaster.sendTransform(transformStampedScan);
                 transformStamped.child_frame_id = "sensor";
             }
 
             pubOdometry.publish(odom);
             pubLaserCloudRegistered.publish(laserCloudRegistered);
-            tfBroadcaster.sendTransform(transformStamped);
-
-            
+            if(publish_odom_tf)
+            {
+                tfBroadcaster.sendTransform(transformStamped);
+            }
         }
-
-
     };
 } // namespace msp
 PLUGINLIB_EXPORT_CLASS(msp::SensorInputNodelet, nodelet::Nodelet)

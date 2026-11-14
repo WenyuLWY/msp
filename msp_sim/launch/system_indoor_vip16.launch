@@ -41,7 +41,7 @@
 
   <include file="$(find visualization_tools)/launch/visualization_tools.launch" >
     <arg name="world_name" value="$(arg world_name)"/>
-    <arg name="lod_density"               value="$(arg lod_density)"/> 
+    <!-- <arg name="lod_density"               value="$(arg lod_density)"/>  -->
   </include>
 
   <!-- <node launch-prefix="nice" pkg="rviz" type="rviz" name="rvizGA" args="-d $(find vehicle_simulator)/rviz/vehicle_simulator.rviz" respawn="true"/> -->

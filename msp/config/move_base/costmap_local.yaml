@@ -1,0 +1,11 @@
+global_frame: odom
+rolling_window: true
+update_frequency: 10
+publish_frequency: 10
+transform_tolerance: 0.5  
+width: 5.0                   
+height: 5.0
+resolution: 0.05
+plugins:
+  - {name: obstacle,                  type: "costmap_2d::ObstacleLayer"}
+  - {name: inflation,                 type: "costmap_2d::InflationLayer"}

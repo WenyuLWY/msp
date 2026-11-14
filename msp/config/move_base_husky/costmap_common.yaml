@@ -1,0 +1,54 @@
+footprint: [[-0.5, -0.33], [-0.5, 0.33], [0.5, 0.33], [0.5, -0.33]]
+footprint_padding: 0.01
+
+robot_base_frame: base_link
+# update_frequency: 4.0
+# publish_frequency: 3.0
+transform_tolerance: 0.5
+
+resolution: 0.05
+
+obstacle_range: 5.5
+raytrace_range: 6.0
+
+#my
+# obstacle_range: 2.0
+# raytrace_range: 3.5
+
+#layer definitions
+static:
+    map_topic: /map
+    subscribe_to_updates: false
+
+# obstacles_laser:
+#     observation_sources: laser
+#     laser: {data_type: LaserScan, clearing: true, marking: true, topic: front/scan, inf_is_valid: true}
+
+obstacle:
+  publish_voxel_map: true       # 是否发布 3D 体素网格用于 Rviz 调试 (topic 通常为 voxel_grid)
+  origin_z: 0.0                 # Z轴起点高度 (米)
+  z_resolution: 0.2             # Z轴方向每个体素的高度分辨率 (米)
+  z_voxels: 10                  # Z轴方向体素的层数(max 16)
+#   unknown_threshold: 15         # 判定为未知区域的阈值
+#   mark_threshold: 0             # 判定为占用障碍物的阈值
+#   combination_method: 1         # 0=Overwrite, 1=Maximum (通常设为1，按最大代价值合并)
+
+  observation_sources: velodyne
+  velodyne: {
+    data_type: PointCloud2,
+    topic: /velodyne_points,
+    marking: true,
+    clearing: true,
+    min_obstacle_height: -0.05, 
+    max_obstacle_height: 2,
+    # obstacle_range: 6.0,
+    # raytrace_range: 8.0,
+  }
+
+# inflation_radius > robot_radius(0.33+0.1footprint_padding)
+# inflation_radius ≈ robot_radius(0.43) + 3.2 / cost_scaling_factor
+# 3 and 1.5; 5 and 1
+inflation:
+  cost_scaling_factor: 5
+  inflation_radius: 1
+    

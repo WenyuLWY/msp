@@ -3,10 +3,10 @@
 <launch>
 
   <param name="/use_sim_time"             value="true" />
-  <arg name="gazebo_gui"                  default="false"/>
+  <arg name="gazebo_gui"                  default="true"/>
 
-  <arg name="world_name"                       default="$(find vehicle_simulator)/world/indoor.world"/>
-  <!-- <arg name="world_name"                       default="$(find msp_sim)/world/room_with_corner.world"/> -->
+  <!-- <arg name="world_name"                       default="$(find vehicle_simulator)/world/indoor.world"/> -->
+  <arg name="world_name"                       default="$(find msp_sim)/world/room_with_corner.world"/>
 
 
   <!-- slam -->
@@ -19,7 +19,6 @@
     <param name="laserCloudTopic"           value="$(arg raw_cloud_topic)"/>
     <param name="robotName"                 value="$(arg robotName)"/>
   </node>
-  <node pkg="tf2_ros" type="static_transform_publisher" name="mappingPublisher"  args="0 0 0 0 0 0 map odom"/>
 
   <!-- Husky robot -->
   <include file="$(find msp_sim)/launch/spawn_husky.launch">
