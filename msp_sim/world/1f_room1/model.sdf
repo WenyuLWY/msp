@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<sdf version="1.6">
+  <model name="bim_room_1f">
+    <static>true</static>
+    <pose>0 0 0 0 0 0</pose>
+    <link name="walls_link">
+      <collision name="walls_collision">
+        <geometry>
+          <mesh><uri>model://bim_room_1f/meshes/walls.dae</uri></mesh>
+        </geometry>
+      </collision>
+      <visual name="walls_visual">
+        <geometry>
+          <mesh><uri>model://bim_room_1f/meshes/walls.dae</uri></mesh>
+        </geometry>
+      </visual>
+    </link>
+    <link name="doors_link">
+      <collision name="doors_collision">
+        <geometry>
+          <mesh><uri>model://bim_room_1f/meshes/doors.dae</uri></mesh>
+        </geometry>
+      </collision>
+      <visual name="doors_visual">
+        <geometry>
+          <mesh><uri>model://bim_room_1f/meshes/doors.dae</uri></mesh>
+        </geometry>
+      </visual>
+    </link>
+    <link name="columns_link">
+      <collision name="columns_collision">
+        <geometry>
+          <mesh><uri>model://bim_room_1f/meshes/columns.dae</uri></mesh>
+        </geometry>
+      </collision>
+      <visual name="columns_visual">
+        <geometry>
+          <mesh><uri>model://bim_room_1f/meshes/columns.dae</uri></mesh>
+        </geometry>
+      </visual>
+    </link>
+  </model>
+</sdf>

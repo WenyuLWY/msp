@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- Keep this launch file beside room_modeluri.world and bim_room_1f/. -->
+  <arg name="room_dir" default="$(dirname)"/>
+  <arg name="world_name" default="$(arg room_dir)/room_modeluri.world"/>
+  
+  <arg name="gui" default="true"/>
+  <arg name="paused" default="false"/>
+  <arg name="verbose" default="true"/>
+  <arg name="use_sim_time" default="true"/>
+
+  <!-- Prepend the local model root without changing shell configuration. -->
+  <env name="GAZEBO_MODEL_PATH"
+       value="$(eval arg('room_dir') + (':' + optenv('GAZEBO_MODEL_PATH') if optenv('GAZEBO_MODEL_PATH') else ''))"/>
+
+
+  <!-- Official Noetic wrapper loads the Gazebo ROS API plugin and /clock. -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(arg world_name)"/>
+    <arg name="gui" value="$(arg gui)"/>
+    <arg name="paused" value="$(arg paused)"/>
+    <arg name="verbose" value="$(arg verbose)"/>
+    <arg name="use_sim_time" value="$(arg use_sim_time)"/>
+    <arg name="physics" value="ode"/>
+    <arg name="output" value="screen"/>
+    <arg name="respawn_gazebo" value="false"/>
+    <arg name="server_required" value="true"/>
+    <arg name="gui_required" value="false"/>
+  </include>
+
+    <include file="$(find msp_sim)/launch/sim_husky.launch">
+        <arg name="laser_3d_enabled"        value="1"/>
+        <arg name="laser_3d_frequency"      value="10"/>
+    </include>
+
+</launch>

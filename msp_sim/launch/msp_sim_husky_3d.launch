@@ -1,7 +1,17 @@
 <!-- -->
 <launch>
     <param name="use_sim_time" value="true" />
-    <arg name="world_name"              default="$(find msp_sim)/world/room_with_corner.world" />
+    <!-- <arg name="world_name"              default="$(find msp_sim)/world/room_with_corner.world" /> -->
+    <!-- <arg name="world_name"              default="$(find msp_sim)/world/1f_room1/1f_room1.world" /> -->
+    <arg name="world_name"              default="$(find msp_sim)/world/SLABIM/floor1/floor1.world" />
+
+
+    <arg name="x_pos"               default="80.85"/>
+    <arg name="y_pos"               default="-7.35"/>
+    <arg name="z_pos"               default="0"/>
+
+
+
       <!--  $(find vehicle_simulator)/world/indoor.world
         $(find msp_sim)/world/room_with_corner.world -->
     <arg name="robotName"               default="husky"/>
@@ -31,11 +41,14 @@
     
 
     <include file="$(find msp_sim)/launch/sim_gazebo_world.launch">
-        <arg name="gazebo_gui"              value="false" />
+        <arg name="gazebo_gui"              value="true" />
         <arg name="world_name"              value="$(arg world_name)" />
     </include>
 
     <include file="$(find msp_sim)/launch/sim_husky.launch">
+        <arg name="x_pos"                   value="$(arg x_pos)"/>
+        <arg name="y_pos"                   value="$(arg y_pos)"/>
+        <arg name="z_pos"                   value="$(arg z_pos)"/>
         <arg name="laser_3d_enabled"        value="1"/>
         <arg name="laser_3d_frequency"      value="10"/>
     </include>

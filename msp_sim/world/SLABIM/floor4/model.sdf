@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<sdf version="1.6">
+  <model name="slabim_floor4">
+    <static>true</static>
+    <pose>0 0 0 0 0 0</pose>
+    <link name="walls_link">
+      <collision name="walls_collision">
+        <geometry>
+          <mesh><uri>model://SLABIM/floor4/meshes/walls.dae</uri></mesh>
+        </geometry>
+      </collision>
+      <visual name="walls_visual">
+        <geometry>
+          <mesh><uri>model://SLABIM/floor4/meshes/walls.dae</uri></mesh>
+        </geometry>
+      </visual>
+    </link>
+    <link name="doors_link">
+      <collision name="doors_collision">
+        <geometry>
+          <mesh><uri>model://SLABIM/floor4/meshes/doors.dae</uri></mesh>
+        </geometry>
+      </collision>
+      <visual name="doors_visual">
+        <geometry>
+          <mesh><uri>model://SLABIM/floor4/meshes/doors.dae</uri></mesh>
+        </geometry>
+      </visual>
+    </link>
+    <link name="columns_link">
+      <collision name="columns_collision">
+        <geometry>
+          <mesh><uri>model://SLABIM/floor4/meshes/columns.dae</uri></mesh>
+        </geometry>
+      </collision>
+      <visual name="columns_visual">
+        <geometry>
+          <mesh><uri>model://SLABIM/floor4/meshes/columns.dae</uri></mesh>
+        </geometry>
+      </visual>
+    </link>
+    <link name="floors_link">
+      <collision name="floors_collision">
+        <geometry>
+          <mesh><uri>model://SLABIM/floor4/meshes/floors.dae</uri></mesh>
+        </geometry>
+      </collision>
+      <visual name="floors_visual">
+        <geometry>
+          <mesh><uri>model://SLABIM/floor4/meshes/floors.dae</uri></mesh>
+        </geometry>
+      </visual>
+    </link>
+  </model>
+</sdf>

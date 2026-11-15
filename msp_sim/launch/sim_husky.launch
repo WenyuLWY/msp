@@ -1,8 +1,12 @@
 <launch>
 
-    <arg name="x" default="0.0"/>
-    <arg name="y" default="0.0"/>
-    <arg name="z" default="0.132"/>
+    <arg name="x_pos" default="0.0"/>
+    <arg name="y_pos" default="0.0"/>
+    <arg name="z_pos" default="0.0"/>
+    <arg name="x" default="$(eval arg('x_pos') + 0.0)"/>
+    <arg name="y" default="$(eval arg('y_pos') + 0.0)"/>
+    <arg name="z" default="$(eval arg('z_pos') + 0.132)"/>
+
     <arg name="yaw" default="0.0"/>
     <arg name="laser_3d_enabled"        default="0"/>
     <arg name="laser_3d_topic"          default="/velodyne_points"/>
@@ -60,7 +64,6 @@
         <rosparam command="load" file="$(find husky_control)/config/twist_mux.yaml" />
         <remap from="cmd_vel_out" to="husky_velocity_controller/cmd_vel"/>
     </node>
-
 
 
     <node name="spawn_husky_model" pkg="gazebo_ros" type="spawn_model"

@@ -2,3 +2,4 @@ tmp/
 autonomous_exploration_development_environment/
 tare_planner/
 .docker.*.xauth
+*.dae

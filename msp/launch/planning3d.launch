@@ -38,7 +38,7 @@
 
   <!-- others -->
   <arg name="cameraOffsetZ" default="0"/>
-  <arg name="autonomyMode" default="true"/>
+  <arg name="autonomyMode" default="false"/>
   <arg name="autonomySpeed" default="2.0"/>
   <arg name="joyToSpeedDelay" default="2.0"/>
   <arg name="goalX" default="0"/>
