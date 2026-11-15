@@ -18,7 +18,7 @@
     <arg name="laserCloudTopic"         default="/velodyne_points"/>
     <arg name="base_frame_id"           default="base_link"/>
     <arg name="lidar_frame_id"          default="velodyne"/>
-    <arg name="pubOdometryTopic"        default="/odom/ground_truth"/>
+    <arg name="pubOdometryTopic"        default="/odom"/>
 
 
 
@@ -56,6 +56,8 @@
     <include file="$(find msp_sim)/launch/sim_slam.launch">
         <arg name="laserCloudTopic"         value="$(arg laserCloudTopic)"/>
         <arg name="base_frame_id"           value="$(arg base_frame_id)"/>
+        <arg name="robotName"               value="$(arg robotName)"/>
+        <arg name="pubOdometryTopic"        value="$(arg pubOdometryTopic)"/>
     </include>
 
 

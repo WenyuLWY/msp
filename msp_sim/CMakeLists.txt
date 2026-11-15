@@ -53,5 +53,5 @@ include_directories(
 set(COMMON_LIBRARIES ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} ${PCL_LIBRARIES} OpenMP::OpenMP_CXX)
 
 
-# add_executable(localization_sim src/localization_sim.cpp)
-# target_link_libraries(localization_sim ${COMMON_LIBRARIES} )
+add_executable(localization_sim src/localization_sim.cpp)
+target_link_libraries(localization_sim ${COMMON_LIBRARIES} )

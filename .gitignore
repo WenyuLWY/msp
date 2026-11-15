@@ -1,5 +1,6 @@
 tmp/
 autonomous_exploration_development_environment/
 tare_planner/
+direct_lidar_odometry/
 .docker.*.xauth
 *.dae

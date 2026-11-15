@@ -1,22 +1,23 @@
 <!-- -->
 <launch>
 
+    <arg name="robotName"                   default="husky"/>
     <!-- <arg name="robotName"                   default="turtlebot3_burger"/> -->
+
     <arg name="laserCloudTopic"             default="/velodyne_points"/>
     <arg name="base_frame_id"               default="base_footprint"/>
-    <!-- <arg name="pubOdometryTopic"            default="/odom"/> -->
+    <arg name="pubOdometryTopic"            default="/odom"/>
 
-    <!-- localization -->
+    <node pkg="tf2_ros" type="static_transform_publisher" name="world2map" args="80.85 -7.35 0 0 0 0 world map" />
+
+    <!-- localization and octomapping -->
     <!-- <node pkg="msp_sim" type="localization_sim" name="localization_sim_node" output="screen">
         <param name="laserCloudTopic"   value="$(arg laserCloudTopic)"/>
         <param name="robotName"         value="$(arg robotName)"/>
         <param name="pubOdometryTopic"  value="$(arg pubOdometryTopic)"/>
-    </node> -->
+    </node>
+    
 
-    <node pkg="tf2_ros" type="static_transform_publisher" name="world2map" args="0 0 0 0 0 0 world map" />
-    <node pkg="tf2_ros" type="static_transform_publisher" name="map2odom"  args="0 0 0 0 0 0 map odom"/>
-
-    <!-- octomapping -->
     <node pkg="octomap_server" type="octomap_server_node" name="octomap_server" output="screen">
         <param name="resolution" value="0.05"/>
         <param name="frame_id" value="map"/>
@@ -26,6 +27,22 @@
         <param name="occupancy_min_z" value="0.15"/>
         <param name="occupancy_max_z" value="1.0"/>
         <remap from="projected_map" to="/map"/>
-    </node>
+    </node> -->
+
+
+    <!-- <include file="$(find msp)/launch/localization/rtabmap_slam.launch">
+        <arg name="use_sim_time"               default="true"/>
+        <arg name="odometry_topic"             default="/odom"/>
+        <arg name="publish_odom_tf"            default="false"/>
+        <arg name="rtabmap_viz"                default="false"/>
+    </include> -->
+
+    <include file="$(find msp)/launch/localization/dlo.launch">
+        <arg name="pointcloud_topic"      value="$(arg laserCloudTopic)"/>
+        <!-- <arg name="imu_topic"             value="/imu/data"/> -->
+        <arg name="pub_odometry_topic"    value="$(arg pubOdometryTopic)"/>
+        <arg name="robot_namespace"        value="robot"/> 
+  </include>
+    <node pkg="tf2_ros" type="static_transform_publisher" name="map2odom"  args="0 0 0 0 0 0 map odom"/>
 
 </launch>

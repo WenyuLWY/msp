@@ -37,12 +37,13 @@ RUN apt-get update && apt-get install -y ros-noetic-dwa-local-planner ros-noetic
 
 #autonomous_exploration_development_environment
 RUN apt-get update && apt-get install -y libusb-dev
-#DLO
-# RUN apt-get update && apt-get install -y libomp-dev libpcl-dev libeigen3-dev 
 #DSV planner
 # RUN apt-get update && apt-get install -y ros-noetic-octomap-ros libgoogle-glog-dev libgflags-dev
 #RTABMAP
-# RUN apt-get update && apt-get install -y ros-noetic-rtabmap-ros ros-noetic-libpointmatcher ros-noetic-libg2o ros-noetic-gtsam
+RUN apt-get update && apt-get install -y ros-noetic-rtabmap* ros-noetic-libpointmatcher ros-noetic-libg2o ros-noetic-gtsam
+# RUN apt-get update && apt-get install -y ros-noetic-rtabmap-ros
+#DLO
+RUN apt-get update && apt-get install -y libomp-dev libpcl-dev libeigen3-dev 
 #2D nav
 # RUN apt-get update && apt-get install -y ros-noetic-pointcloud-to-laserscan ros-noetic-point-cloud2-filters ros-noetic-navigation ros-noetic-teb-local-planner
 # RUN apt-get update && apt-get install -y ros-noetic-explore-lite

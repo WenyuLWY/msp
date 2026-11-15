@@ -14,6 +14,8 @@
   <arg name="considerDrop" default="true"/>
   <arg name="limitGroundLift" default="false"/>
   <arg name="maxGroundLift" default="0.15"/>
+  <arg name="noDataObstacle"  default="true" />
+
   <arg name="vehicleHeight" default="1.5"/>
   <arg name="minRelZ" default="-2.5"/>
   <arg name="maxRelZ" default="1.0"/>
@@ -29,17 +31,18 @@
   <!-- pathFollower -->
   <arg name="cmd_vel_topic" default="/cmd_vel"/>
   <arg name="lookAheadDis" default="0.5"/>
-  <arg name="maxYawRate" default="45"/>
-  <arg name="noRotAtStop" default="false"/>
-  <arg name="noRotAtGoal" default="true"/>
+  
+  <arg name="maxYawRate" default="45"/> <!-- 90, Used only to limit the magnitude of the angular velocity,dependent on the robot's dynamics -->
+  <arg name="stopYawRateGain" default="3.5"/> <!-- 7.5 -->
+  <arg name="noRotAtGoal" default="false"/> <!-- true -->
   <arg name="dirDiffThre" default="0.1"/>
   <arg name="stopDisThre" default="0.2"/>
-  <arg name="slowDwnDisThre" default="0.85"/>
+  <arg name="slowDwnDisThre" default="1.2"/> <!-- 0.85 -->
 
   <!-- others -->
   <arg name="cameraOffsetZ" default="0"/>
-  <arg name="autonomyMode" default="false"/>
-  <arg name="autonomySpeed" default="2.0"/>
+  <arg name="autonomyMode" default="true"/>
+  <arg name="autonomySpeed" default="1.0"/> <!-- 2.0 -->
   <arg name="joyToSpeedDelay" default="2.0"/>
   <arg name="goalX" default="0"/>
   <arg name="goalY" default="0"/>
@@ -62,8 +65,8 @@
     <param name="minDyObsVFOV" type="double" value="-16.0" />
     <param name="maxDyObsVFOV" type="double" value="16.0" />
     <param name="minDyObsPointNum" type="int" value="1" />
-    <param name="noDataObstacle" type="bool" value="false" />
-    <param name="noDataBlockSkipNum" type="int" value="0" />
+    <param name="noDataObstacle" type="bool" value="$(arg noDataObstacle)" />
+    <param name="noDataBlockSkipNum" type="int" value="0" /> <!-- 1-2 -->
     <param name="minBlockPointNum" type="int" value="10" />
     <param name="vehicleHeight" type="double" value="$(arg vehicleHeight)" />
     <param name="voxelPointUpdateThre" type="int" value="100" />
@@ -143,7 +146,7 @@
     <param name="twoWayDrive" value="$(arg twoWayDrive)" />
     <param name="lookAheadDis" type="double" value="$(arg lookAheadDis)" />
     <param name="yawRateGain" type="double" value="7.5" />
-    <param name="stopYawRateGain" type="double" value="7.5" />
+    <param name="stopYawRateGain" type="double" value="$(arg stopYawRateGain)" />
     <param name="maxYawRate" type="double" value="$(arg maxYawRate)" />
     <param name="maxSpeed" value="$(arg maxSpeed)" />
     <param name="maxAccel" type="double" value="$(arg maxAccel)" />
@@ -160,7 +163,7 @@
     <param name="useInclToStop" type="bool" value="false" />
     <param name="inclThre" type="double" value="45.0" />
     <param name="stopTime" type="double" value="5.0" />
-    <param name="noRotAtStop" type="bool" value="$(arg noRotAtStop)" />
+    <param name="noRotAtStop" type="bool" value="false" />
     <param name="noRotAtGoal" type="bool" value="$(arg noRotAtGoal)" />
     <param name="autonomyMode" value="$(arg autonomyMode)" />
     <param name="autonomySpeed" value="$(arg autonomySpeed)" />
