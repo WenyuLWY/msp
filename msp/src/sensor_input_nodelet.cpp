@@ -397,7 +397,7 @@ namespace msp
                 geometry_msgs::TransformStamped transformStampedScan=transformStamped;
                 transformStampedScan.header.stamp = laserCloudIn->header.stamp;
                 transformStampedScan.child_frame_id = "sensor_at_scan";
-                // tfBroadcaster.sendTransform(transformStampedScan);
+                tfBroadcaster.sendTransform(transformStampedScan);
                 transformStamped.child_frame_id = "sensor";
             }
 

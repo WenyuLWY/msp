@@ -4,3 +4,4 @@ tare_planner/
 direct_lidar_odometry/
 .docker.*.xauth
 *.dae
+ARiADNE-ROS-Planner/

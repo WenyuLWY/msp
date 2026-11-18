@@ -14,7 +14,7 @@
   <arg name="considerDrop" default="true"/>
   <arg name="limitGroundLift" default="false"/>
   <arg name="maxGroundLift" default="0.15"/>
-  <arg name="noDataObstacle"  default="true" />
+  <arg name="noDataObstacle"  default="false" />    <!-- true -->
 
   <arg name="vehicleHeight" default="1.5"/>
   <arg name="minRelZ" default="-2.5"/>
@@ -24,7 +24,7 @@
   <arg name="checkTerrainConn" default="false"/>
 
   <!-- local_planner -->
-  <arg name="twoWayDrive" default="true"/>
+  <arg name="twoWayDrive" default="false"/>
   <arg name="obstacleHeightThre" default="0.15"/>
   <arg name="groundHeightThre" default="0.1"/>
 
@@ -32,9 +32,9 @@
   <arg name="cmd_vel_topic" default="/cmd_vel"/>
   <arg name="lookAheadDis" default="0.5"/>
   
-  <arg name="maxYawRate" default="45"/> <!-- 90, Used only to limit the magnitude of the angular velocity,dependent on the robot's dynamics -->
+  <arg name="maxYawRate" default="90"/> <!-- 90, Used only to limit the magnitude of the angular velocity,dependent on the robot's dynamics -->
   <arg name="stopYawRateGain" default="3.5"/> <!-- 7.5 -->
-  <arg name="noRotAtGoal" default="false"/> <!-- true -->
+  <arg name="noRotAtGoal" default="true"/> <!-- true -->
   <arg name="dirDiffThre" default="0.1"/>
   <arg name="stopDisThre" default="0.2"/>
   <arg name="slowDwnDisThre" default="1.2"/> <!-- 0.85 -->
@@ -97,6 +97,7 @@
   </node>
 
   <node pkg="local_planner" type="localPlanner" name="localPlanner" output="screen" required="true">
+    <!-- <remap from="way_point" to="/way_point_filtered"/> -->
     <param name="pathFolder" type="string" value="$(find local_planner)/paths" />
     <param name="vehicleLength" type="double" value="$(arg vehicleLength)" />
     <param name="vehicleWidth" type="double" value="$(arg vehicleWidth)" />

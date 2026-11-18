@@ -49,6 +49,12 @@ RUN apt-get update && apt-get install -y libomp-dev libpcl-dev libeigen3-dev
 # RUN apt-get update && apt-get install -y ros-noetic-explore-lite
 
 
+
+RUN python3 -m pip install --no-cache-dir -U "pip<25" && \
+    python3 -m pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu "torch==2.4.1+cpu" && \ 
+    python3 -m pip install --no-cache-dir "numpy==1.24.4" "scikit-image==0.21.0" "matplotlib==3.7.5"
+RUN apt-get update && apt-get install -y python-is-python3
+
 # RUN git clone https://github.com/vectr-ucla/direct_lidar_odometry.git --depth 1 /root/dependencies_catkin_ws/src/direct_lidar_odometry
 # RUN git clone https://github.com/vectr-ucla/direct_lidar_inertial_odometry.git --depth 1 /root/dependencies_catkin_ws/src/direct_lidar_inertial_odometry
 # RUN git clone https://github.com/hku-mars/FAST_LIO.git --depth 1 /root/dependencies_catkin_ws/src/FAST_LIO && cd /root/dependencies_catkin_ws/src/FAST_LIO && \

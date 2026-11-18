@@ -3,11 +3,17 @@
     <param name="use_sim_time" value="true" />
     <!-- <arg name="world_name"              default="$(find msp_sim)/world/room_with_corner.world" /> -->
     <!-- <arg name="world_name"              default="$(find msp_sim)/world/1f_room1/1f_room1.world" /> -->
-    <arg name="world_name"              default="$(find msp_sim)/world/SLABIM/floor1/floor1.world" />
+    <arg name="world_name"              default="$(find msp_sim)/world/vehicle_simulator/indoor/indoor.world" />
+    <!-- <arg name="world_name"              default="$(find msp_sim)/world/SLABIM/floor1/floor1.world" /> -->
 
 
-    <arg name="x_pos"               default="80.85"/>
+    <!-- <arg name="x_pos"               default="80.85"/>
     <arg name="y_pos"               default="-7.35"/>
+    <arg name="z_pos"               default="0"/> -->
+
+
+    <arg name="x_pos"               default="0"/>
+    <arg name="y_pos"               default="0"/>
     <arg name="z_pos"               default="0"/>
 
 
@@ -38,6 +44,9 @@
         <arg name="source_frame_id"         value="$(arg base_frame_id)"/> 
         <arg name="publish_odom_tf"         value="true"/>
     </include>
+    
+    <!-- <node pkg="msp" type="waypoint_filter.py" name="waypoint_filter" output="screen"/> -->
+
     
 
     <include file="$(find msp_sim)/launch/sim_gazebo_world.launch">

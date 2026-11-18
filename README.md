@@ -43,3 +43,6 @@ dpkg-query -W -f='${binary:Package}\t${Version}\t${Status}\n' | grep -i gazebo
 dpkg-query -W -f='${binary:Package}\n' | grep -i gazebo
 
 msp_sim_turtlebot3_2d is newest
+
+
+roslaunch msp_sim msp_sim_husky_3d.launch

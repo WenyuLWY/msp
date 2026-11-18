@@ -32,6 +32,7 @@ MOUNT_ARGS="$MOUNT_ARGS -v $PKG_ROOT_DIR/tmp/logs:/home/user/catkin_ws/logs"
 # -v ~/gazebo_models:/home/user/.gazebo/models \
 if grep -qi microsoft /proc/version; then # Check if running in WSL
   docker run -it --name $CONTAINER_NAME \
+      --ipc=host \
       --gpus all --device=/dev/dxg \
       -e DISPLAY=$DISPLAY \
       -e WAYLAND_DISPLAY=$WAYLAND_DISPLAY \
@@ -50,6 +51,8 @@ else # Running in ubuntu environment
   touch "$XAUTH"
   xauth nlist "$DISPLAY" | sed -e 's/^..../ffff/' | xauth -f "$XAUTH" nmerge -
   chmod 644 "$XAUTH"
+
+    # --privileged --net=host --ipc=host -v /dev:/dev \
 
   docker run -it --name $CONTAINER_NAME \
       --user user \
